@@ -1,4 +1,6 @@
 const swaggerDefinitions = {
+  // #region USUARIOS
+
   "/login": {
     post: {
       tags: ["Usuarios"],
@@ -262,6 +264,59 @@ const swaggerDefinitions = {
       },
     },
   },
+
+  // #endregion USUARIOS
+
+  // #region PLANES
+
+  "/getPlanes": {
+    get: {
+      tags: ["Planes"], // Add a tag to group endpoints
+      summary: "Get Planes",
+      responses: {
+        200: {
+          description: "Planes retrieved successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  results: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {},
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error getting planes.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  // #endregion PLANES
 };
 
 module.exports = swaggerDefinitions;

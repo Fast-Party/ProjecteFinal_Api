@@ -124,6 +124,21 @@ app.post("/buscarUsuarios", (req, res) => {
 
 // #endregion USUARIOS
 
+// #region PLANES
+
+app.get("/getPlanes", (req, res) => {
+  const query = "SELECT * FROM Planes;";
+  db.query(query, [], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res.status(500).json({ message: "Error getting planes.", err });
+    }
+    res.status(200).json({ results });
+  });
+});
+
+// #endregion PLANES
+
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.listen(PORT, () => {
