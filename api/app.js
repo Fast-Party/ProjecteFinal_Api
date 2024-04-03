@@ -93,11 +93,33 @@ app.post("/registrarUsuario", (req, res) => {
         console.error("Error in database query:", err);
         return res
           .status(500)
-          .json({ message: "Error registering user.", err }); // Corrected response format
+          .json({ message: "Error registering user.", err });
       }
-      res.status(200).json({ message: "User registered correctly." }); // Corrected response format
+      res.status(200).json({ message: "User registered correctly." });
     }
   );
+});
+
+app.post("/buscarUsuarios", (req, res) => {
+  const { NombreUsuario } = req.body;
+  const Nombre = NombreUsuario + "%";
+
+  const query = `SELECT u.IdUsuario, u.NombreUsuario, u.Nombre, u.Imagen, 
+    (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
+    AVG(p.Valoracion) AS Valoracion
+    FROM Usuarios u
+    LEFT JOIN Planes p ON u.IdUsuario = p.IdAutor
+    WHERE u.NombreUsuario LIKE ?
+    GROUP BY u.IdUsuario, u.NombreUsuario, u.Nombre, u.Imagen;`;
+  db.query(query, [Nombre], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res
+        .status(500)
+        .json({ message: "Error searching for users.", err });
+    }
+    res.status(200).json({ results });
+  });
 });
 
 // #endregion USUARIOS

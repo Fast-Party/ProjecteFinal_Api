@@ -193,6 +193,75 @@ const swaggerDefinitions = {
       },
     },
   },
+  "/buscarUsuarios": {
+    post: {
+      tags: ["Usuarios"],
+      summary: "Busqueda de Usuarios",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                NombreUsuario: {
+                  type: "string",
+                },
+              },
+              required: ["NombreUsuario"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Search results returned successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  results: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        IdUsuario: { type: "integer" },
+                        NombreUsuario: { type: "string" },
+                        Nombre: { type: "string" },
+                        Imagen: { type: "string" },
+                        Seguidores: { type: "integer" },
+                        Valoracion: { type: "number" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error searching for users.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 };
 
 module.exports = swaggerDefinitions;
