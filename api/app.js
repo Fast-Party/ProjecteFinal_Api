@@ -52,6 +52,54 @@ app.post("/login", (req, res) => {
   });
 });
 
+app.post("/registrarUsuario", (req, res) => {
+  const {
+    NombreUsuario,
+    Nombre,
+    Contrasenya,
+    Email,
+    Telefono,
+    FechaNacimiento,
+    Tipo,
+  } = req.body;
+
+  if (
+    !NombreUsuario ||
+    !Nombre ||
+    !Contrasenya ||
+    !Email ||
+    !Telefono ||
+    !FechaNacimiento ||
+    !Tipo
+  ) {
+    return res.status(400).json({ message: "Fields are required." });
+  }
+
+  const query =
+    "INSERT INTO Usuarios (NombreUsuario, Nombre, Contrasenya, Email, Telefono, FechaNacimiento, Tipo) VALUES (?,?,?,?,?,?,?)";
+  db.query(
+    query,
+    [
+      NombreUsuario,
+      Nombre,
+      Contrasenya,
+      Email,
+      Telefono,
+      FechaNacimiento,
+      Tipo,
+    ],
+    (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res
+          .status(500)
+          .json({ message: "Error registering user.", err }); // Corrected response format
+      }
+      res.status(200).json({ message: "User registered correctly." }); // Corrected response format
+    }
+  );
+});
+
 // #endregion USUARIOS
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
