@@ -653,6 +653,164 @@ const swaggerDefinitions = {
     },
   },
 
+  "/deleteInteresCategoria": {
+    post: {
+      tags: ["CategoriasSubcategorias"],
+      summary: "Delete interest in a category",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: {
+                  type: "integer",
+                },
+                IdCategoria: {
+                  type: "integer",
+                },
+              },
+              required: ["IdUsuario", "IdCategoria"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Interest deleted successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Interest deleted correctly.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Fields are required.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error deleting interest category.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  "/deleteInteresSubcategoria": {
+    post: {
+      tags: ["CategoriasSubcategorias"],
+      summary: "Delete interest in a subcategory",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: {
+                  type: "integer",
+                },
+                IdSubcategoria: {
+                  type: "integer",
+                },
+              },
+              required: ["IdUsuario", "IdSubcategoria"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Interest deleted successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Interest deleted correctly.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Fields are required.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error deleting interest subcategory.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
   // #endregion CATEGORIAS I SUBCATEGORIAS
 };
 

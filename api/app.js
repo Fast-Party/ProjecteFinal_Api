@@ -277,6 +277,46 @@ app.post("/postInteresSubcategoria", (req, res) => {
   });
 });
 
+app.post("/deleteInteresCategoria", (req, res) => {
+  const { IdUsuario, IdCategoria } = req.body;
+
+  if (!IdUsuario || !IdCategoria) {
+    return res.status(400).json({ message: "Fields are required." });
+  }
+
+  const query =
+    "DELETE FROM Intereses_Usuarios_Categorias WHERE IdUsuario = ? AND IdCategoria = ?";
+  db.query(query, [IdUsuario, IdCategoria], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res
+        .status(500)
+        .json({ message: "Error deleting interes categoria.", err });
+    }
+    res.status(200).json({ message: "Interes deleted correctly." });
+  });
+});
+
+app.post("/deleteInteresSubcategoria", (req, res) => {
+  const { IdUsuario, IdSubcategoria } = req.body;
+
+  if (!IdUsuario || !IdSubcategoria) {
+    return res.status(400).json({ message: "Fields are required." });
+  }
+
+  const query =
+    "DELETE FROM Intereses_Usuarios_Subcategorias WHERE IdUsuario = ? AND IdSubcategoria = ?";
+  db.query(query, [IdUsuario, IdSubcategoria], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res
+        .status(500)
+        .json({ message: "Error deleting interes categoria.", err });
+    }
+    res.status(200).json({ message: "Interes deleted correctly." });
+  });
+});
+
 // #endregion CATEGORIAS I SUBCATEGORIAS
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
