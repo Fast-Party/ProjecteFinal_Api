@@ -237,6 +237,46 @@ app.get("/getCategoriasISubcategorias", (req, res) => {
     });
 });
 
+app.post("/postInteresCategoria", (req, res) => {
+  const { IdUsuario, IdCategoria } = req.body;
+
+  if (!IdUsuario || !IdCategoria) {
+    return res.status(400).json({ message: "Fields are required." });
+  }
+
+  const query =
+    "INSERT INTO Intereses_Usuarios_Categorias (IdUsuario, IdCategoria) VALUES (?,?)";
+  db.query(query, [IdUsuario, IdCategoria], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res
+        .status(500)
+        .json({ message: "Error posting interes categoria.", err });
+    }
+    res.status(200).json({ message: "Interes posted correctly." });
+  });
+});
+
+app.post("/postInteresSubcategoria", (req, res) => {
+  const { IdUsuario, IdSubcategoria } = req.body;
+
+  if (!IdUsuario || !IdSubcategoria) {
+    return res.status(400).json({ message: "Fields are required." });
+  }
+
+  const query =
+    "INSERT INTO Intereses_Usuarios_Subcategorias (IdUsuario, IdSubcategoria) VALUES (?,?)";
+  db.query(query, [IdUsuario, IdSubcategoria], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res
+        .status(500)
+        .json({ message: "Error posting interes subcategoria.", err });
+    }
+    res.status(200).json({ message: "Interes posted correctly." });
+  });
+});
+
 // #endregion CATEGORIAS I SUBCATEGORIAS
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));

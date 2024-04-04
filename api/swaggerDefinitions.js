@@ -495,6 +495,164 @@ const swaggerDefinitions = {
     },
   },
 
+  "/postInteresCategoria": {
+    post: {
+      tags: ["CategoriasSubcategorias"],
+      summary: "Post interest in a category",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: {
+                  type: "integer",
+                },
+                IdCategoria: {
+                  type: "integer",
+                },
+              },
+              required: ["IdUsuario", "IdCategoria"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Interest posted successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Interes posted correctly.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Fields are required.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error posting interes categoria.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  "/postInteresSubcategoria": {
+    post: {
+      tags: ["CategoriasSubcategorias"],
+      summary: "Post interest in a subcategory",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: {
+                  type: "integer",
+                },
+                IdSubcategoria: {
+                  type: "integer",
+                },
+              },
+              required: ["IdUsuario", "IdSubcategoria"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Interest posted successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Interest posted correctly.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Fields are required.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error posting interest subcategory.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
   // #endregion CATEGORIAS I SUBCATEGORIAS
 };
 
