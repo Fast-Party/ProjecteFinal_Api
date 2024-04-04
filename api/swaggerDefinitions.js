@@ -92,6 +92,7 @@ const swaggerDefinitions = {
       },
     },
   },
+
   "/registrarUsuario": {
     post: {
       tags: ["Usuarios"], // Add a tag to group endpoints
@@ -195,6 +196,7 @@ const swaggerDefinitions = {
       },
     },
   },
+
   "/buscarUsuarios": {
     post: {
       tags: ["Usuarios"],
@@ -265,6 +267,71 @@ const swaggerDefinitions = {
     },
   },
 
+  "/perfilUsuario": {
+    post: {
+      tags: ["Usuarios"],
+      summary: "Get user profile and associated plans",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: {
+                  type: "integer",
+                },
+              },
+              required: ["IdUsuario"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description:
+            "User profile and associated plans retrieved successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  perfil: {
+                    type: "array",
+                    items: {},
+                  },
+                  planes: {
+                    type: "array",
+                    items: {},
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error getting perfil de usuario.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
   // #endregion USUARIOS
 
   // #region PLANES
@@ -316,7 +383,71 @@ const swaggerDefinitions = {
     },
   },
 
+  "/getPlanesDeUsuario": {
+    post: {
+      tags: ["Planes"],
+      summary: "Get Planes de Usuario",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: {
+                  type: "integer",
+                },
+              },
+              required: ["IdUsuario"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Planes retrieved successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  results: {
+                    type: "array",
+                    items: {},
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error getting planes.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
   // #endregion PLANES
+
+  // #region CATEGORIAS I SUBCATEGORIAS
+
+  // #endregion CATEGORIAS I SUBCATEGORIAS
 };
 
 module.exports = swaggerDefinitions;

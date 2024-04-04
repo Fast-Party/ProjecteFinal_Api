@@ -1,0 +1,15 @@
+# Node dependencies
+/node_modules
+
+# Environment variables
+.env
+
+# Log files
+*.log
+
+# IDE/Editor specific files
+.vscode
+.idea
+
+# Dependency directories
+/bower_components

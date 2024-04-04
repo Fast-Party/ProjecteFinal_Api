@@ -122,6 +122,51 @@ app.post("/buscarUsuarios", (req, res) => {
   });
 });
 
+app.post("/perfilUsuario", (req, res) => {
+  const { IdUsuario } = req.body;
+
+  const query1 = `SELECT u.NombreUsuario, u.Nombre, u.Descripcion, u.FechaNacimiento, u.Imagen, 
+                  u.CuentaPrivada, u.Verificado, 
+                  (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
+                  AVG(p.Valoracion) AS Valoracion
+                  FROM Usuarios u 
+                  LEFT JOIN Planes p ON u.IdUsuario = p.IdAutor
+                  WHERE u.IdUsuario = ?`;
+
+  const query2 = `SELECT * FROM Planes WHERE IdAutor = ?`;
+
+  Promise.all([
+    new Promise((resolve, reject) => {
+      db.query(query1, [IdUsuario], (err, results) => {
+        if (err) {
+          console.error("Error in database query 1:", err);
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    }),
+    new Promise((resolve, reject) => {
+      db.query(query2, [IdUsuario], (err, results) => {
+        if (err) {
+          console.error("Error in database query 2:", err);
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    }),
+  ])
+    .then(([perfil, planes]) => {
+      res.status(200).json({ perfil: perfil, planes: planes });
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ message: "Error getting perfil de usuario.", err });
+    });
+});
+
 // #endregion USUARIOS
 
 // #region PLANES
@@ -137,7 +182,35 @@ app.get("/getPlanes", (req, res) => {
   });
 });
 
+app.post("/getPlanesDeUsuario", (req, res) => {
+  const { IdUsuario } = req.body;
+
+  const query = "SELECT * FROM Planes WHERE IdAutor = ? ORDER BY Fecha desc;";
+  db.query(query, [IdUsuario], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res.status(500).json({ message: "Error getting planes.", err });
+    }
+    res.status(200).json({ results });
+  });
+});
+
 // #endregion PLANES
+
+// #region CATEGORIAS I SUBCATEGORIAS
+
+app.get("/getCategorias", (req, res) => {
+  const query = "SELECT * FROM Categorias;";
+  db.query(query, [], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res.status(500).json({ message: "Error getting planes.", err });
+    }
+    res.status(200).json({ results });
+  });
+});
+
+// #endregion CATEGORIAS I SUBCATEGORIAS
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
