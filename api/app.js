@@ -335,6 +335,30 @@ app.post("/postPlan", (req, res) => {
   );
 });
 */
+
+app.post("/unirseAPlan", (req, res) => {
+  const { IdPlan, IdUsuario, Privado } = req.body;
+
+  let estado = 0;
+
+  if (Privado === true) {
+    estado = 1;
+  } else {
+    estado = 2;
+  }
+
+  const query = `INSERT INTO Usuarios_Planes (IdUsuario, IdPlan, IdEstado) 
+  VALUES (?,?,?)
+  `;
+  db.query(query, [IdPlan, IdUsuario, estado], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res.status(500).json({ message: "Error uniendose a plan.", err });
+    }
+    res.status(200).json({ message: "Peticion/Union a plan correctly" });
+  });
+});
+
 // #endregion PLANES
 
 // #region CATEGORIAS I SUBCATEGORIAS

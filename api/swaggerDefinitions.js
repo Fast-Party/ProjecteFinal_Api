@@ -869,6 +869,72 @@ const swaggerDefinitions = {
     },
   },
 */
+  "/unirseAPlan": {
+    post: {
+      tags: ["Planes"],
+      summary: "Unirse a un Plan",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdPlan: {
+                  type: "integer",
+                },
+                IdUsuario: {
+                  type: "integer",
+                },
+                Privado: {
+                  type: "boolean",
+                },
+              },
+              required: ["IdPlan", "IdUsuario", "Privado"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Successfully joined plan",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Peticion/Union a plan correctly",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error uniendose a plan.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
   // #endregion PLANES
 
   // #region CATEGORIAS I SUBCATEGORIAS
