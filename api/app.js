@@ -199,15 +199,42 @@ app.post("/getPlanesDeUsuario", (req, res) => {
 
 // #region CATEGORIAS I SUBCATEGORIAS
 
-app.get("/getCategorias", (req, res) => {
-  const query = "SELECT * FROM Categorias;";
-  db.query(query, [], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res.status(500).json({ message: "Error getting planes.", err });
-    }
-    res.status(200).json({ results });
-  });
+app.get("/getCategoriasISubcategorias", (req, res) => {
+  const query1 = "SELECT * FROM Categorias;";
+  const query2 = "SELECT * FROM Subcategorias ORDER BY IdCategoria;";
+
+  Promise.all([
+    new Promise((resolve, reject) => {
+      db.query(query1, (err, results) => {
+        if (err) {
+          console.error("Error in database query 1:", err);
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    }),
+    new Promise((resolve, reject) => {
+      db.query(query2, (err, results) => {
+        if (err) {
+          console.error("Error in database query 2:", err);
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    }),
+  ])
+    .then(([categorias, subcategorias]) => {
+      res
+        .status(200)
+        .json({ categorias: categorias, subcategorias: subcategorias });
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ message: "Error getting categorias i subcategorias.", err });
+    });
 });
 
 // #endregion CATEGORIAS I SUBCATEGORIAS

@@ -447,6 +447,54 @@ const swaggerDefinitions = {
 
   // #region CATEGORIAS I SUBCATEGORIAS
 
+  "/getCategoriasISubcategorias": {
+    get: {
+      tags: ["CategoriasSubcategorias"],
+      summary: "Get categories and subcategories",
+      responses: {
+        200: {
+          description: "Categories and subcategories retrieved successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  categorias: {
+                    type: "array",
+                    items: {},
+                  },
+                  subcategorias: {
+                    type: "array",
+                    items: {},
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error getting categorias i subcategorias.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
   // #endregion CATEGORIAS I SUBCATEGORIAS
 };
 
