@@ -169,6 +169,38 @@ app.post("/perfilUsuario", (req, res) => {
 
 // #endregion USUARIOS
 
+// #region SEGUIMIENTOS
+
+app.post("/getSeguidores", (req, res) => {
+  const { IdUsuario } = req.body;
+
+  const query = "SELECT IdSeguidor FROM Seguimientos WHERE IdSeguido = ?";
+  db.query(query, [IdUsuario], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res
+        .status(500)
+        .json({ message: "Error getting seguidores.", err });
+    }
+    res.status(200).json({ results });
+  });
+});
+
+app.post("/getSeguidos", (req, res) => {
+  const { IdUsuario } = req.body;
+
+  const query = "SELECT IdSeguido FROM Seguimientos WHERE IdSeguidor = ?";
+  db.query(query, [IdUsuario], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res.status(500).json({ message: "Error getting seguidos.", err });
+    }
+    res.status(200).json({ results });
+  });
+});
+
+// #endregion SEGUIMIENTOS
+
 // #region PLANES
 
 app.get("/getPlanes", (req, res) => {

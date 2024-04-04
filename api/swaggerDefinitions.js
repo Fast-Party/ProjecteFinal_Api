@@ -334,6 +334,143 @@ const swaggerDefinitions = {
 
   // #endregion USUARIOS
 
+  // #region SEGUIMIENTOS
+
+  "/getSeguidores": {
+    post: {
+      tags: ["Seguimientos"],
+      summary: "Get followers of a user",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: {
+                  type: "integer",
+                },
+              },
+              required: ["IdUsuario"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Followers retrieved successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  results: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        IdSeguidor: {
+                          type: "integer",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error getting followers.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "/getSeguidos": {
+    post: {
+      tags: ["Seguimientos"],
+      summary: "Get users followed by a user",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: {
+                  type: "integer",
+                },
+              },
+              required: ["IdUsuario"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Users followed retrieved successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  results: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        IdSeguido: {
+                          type: "integer",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error getting users followed.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  //#endregion SEGUIMIENTOS
+
   // #region PLANES
 
   "/getPlanes": {
