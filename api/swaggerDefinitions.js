@@ -596,6 +596,9 @@ const swaggerDefinitions = {
 
   //#endregion SEGUIMIENTOS
 
+  /* 
+  !!! Revisar POST PLAN
+  */
   // #region PLANES
 
   "/getPlanes": {
@@ -705,6 +708,167 @@ const swaggerDefinitions = {
     },
   },
 
+  "/getPlanById": {
+    post: {
+      tags: ["Planes"],
+      summary: "Get plan by ID",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdPlan: {
+                  type: "integer",
+                },
+              },
+              required: ["IdPlan"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Plan retrieved successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  results: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error getting plan.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  /*
+  "/postPlan": {
+    post: {
+      tags: ["Planes"],
+      summary: "Create a new plan",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                plan: {
+                  type: "object",
+                  properties: {
+                    IdAutor: { type: "integer" },
+                    Titulo: { type: "string" },
+                    Fecha: { type: "string", format: "date-time" },
+                    ZonaHoraria: { type: "string" },
+                    Duracion: { type: "string" },
+                    Localizacion: { type: "string" },
+                    AforoMaximo: { type: "integer" },
+                    EdadMinima: { type: "integer" },
+                    EdadMaxima: { type: "integer" },
+                    Descripcion: { type: "string" },
+                    PlanPrivado: { type: "boolean" },
+                    DePago: { type: "boolean" },
+                    Precio: { type: "number" },
+                    FechaPublicacion: { type: "string", format: "date-time" },
+                  },
+                  required: [
+                    "IdAutor",
+                    "Titulo",
+                    "Fecha",
+                    "ZonaHoraria",
+                    "Localizacion",
+                    "FechaPublicacion",
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Plan created successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Plan posted correctly.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "There are empty fields that must be fulfilled.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error posting plan.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+*/
   // #endregion PLANES
 
   // #region CATEGORIAS I SUBCATEGORIAS

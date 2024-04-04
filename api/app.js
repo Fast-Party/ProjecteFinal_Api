@@ -222,12 +222,17 @@ app.post("/dejarDeSeguirUsuario", (req, res) => {
       console.error("Error in database query:", err);
       return res.status(500).json({ message: "Error seguir usuario.", err });
     }
-    res.status(200).json({ message: "Usuario dejado de seguir correctamente." });
+    res
+      .status(200)
+      .json({ message: "Usuario dejado de seguir correctamente." });
   });
 });
 
 // #endregion SEGUIMIENTOS
 
+/*
+  ! Revisar POST PLAN
+*/
 // #region PLANES
 
 app.get("/getPlanes", (req, res) => {
@@ -254,6 +259,82 @@ app.post("/getPlanesDeUsuario", (req, res) => {
   });
 });
 
+app.post("/getPlanById", (req, res) => {
+  const { IdPlan } = req.body;
+
+  const query = "SELECT * FROM Planes WHERE IdPlan = ?";
+  db.query(query, [IdPlan], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res.status(500).json({ message: "Error getting plan.", err });
+    }
+    res.status(200).json({ results });
+  });
+});
+/*
+app.post("/postPlan", (req, res) => {
+  const {
+    IdAutor,
+    Titulo,
+    Fecha,
+    ZonaHoraria,
+    Duracion,
+    Localizacion,
+    AforoMaximo,
+    EdadMinima,
+    EdadMaxima,
+    Descripcion,
+    PlanPrivado,
+    DePago,
+    Precio,
+    FechaPublicacion,
+  } = req.body;
+
+  if (
+    !IdAutor ||
+    !Titulo ||
+    !Fecha ||
+    !ZonaHoraria ||
+    !Localizacion ||
+    !FechaPublicacion
+  ) {
+    return res
+      .status(400)
+      .json({ message: "There are empty fields that must be fullfiled." });
+  }
+
+  const query = `INSERT INTO Planes (IdAutor, Titulo, Fecha, ZonaHoraria, Duracion, Localizacion, 
+      AforoMaximo, EdadMinima, EdadMaxima, Descripcion, PlanPrivado, DePago, Precio, FechaPublicacion)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+    `;
+  db.query(
+    query,
+    [
+      IdAutor,
+      Titulo,
+      Fecha,
+      ZonaHoraria,
+      Duracion,
+      Localizacion,
+      AforoMaximo,
+      EdadMinima,
+      EdadMaxima,
+      Descripcion,
+      PlanPrivado,
+      DePago,
+      Precio,
+      FechaPublicacion,
+    ],
+    (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(500).json({ message: "Error posting plan.", err });
+      }
+      res.status(200).json({ message: "Plan posted correctly." });
+    }
+  );
+});
+*/
 // #endregion PLANES
 
 // #region CATEGORIAS I SUBCATEGORIAS
