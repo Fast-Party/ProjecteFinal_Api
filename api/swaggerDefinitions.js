@@ -935,6 +935,126 @@ const swaggerDefinitions = {
     },
   },
 
+  "/aceptarUnionAPlan": {
+    post: {
+      tags: ["Planes"],
+      summary: "Aceptar unión a un Plan",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuarioPlan: {
+                  type: "integer",
+                },
+              },
+              required: ["IdUsuarioPlan"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Union a plan aceptada correctamente",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Union a plan aceptada correctamente",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error aceptando unión a plan.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  "/denegarUnionAPlan": {
+    post: {
+      tags: ["Planes"],
+      summary: "Denegar unión a un Plan",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuarioPlan: {
+                  type: "integer",
+                },
+              },
+              required: ["IdUsuarioPlan"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Unión a plan denegada correctamente",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Unión a plan denegada correctamente",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error denegando unión a plan.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
   // #endregion PLANES
 
   // #region CATEGORIAS I SUBCATEGORIAS

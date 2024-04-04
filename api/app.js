@@ -359,6 +359,37 @@ app.post("/unirseAPlan", (req, res) => {
   });
 });
 
+app.post("/aceptarUnionAPlan", (req, res) => {
+  const { IdUsuarioPlan } = req.body;
+
+  const query =
+    "UPDATE Usuarios_Planes SET IdEstado = 2 WHERE IdUsuarioPlan = ?";
+  db.query(query, [IdUsuarioPlan], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res
+        .status(500)
+        .json({ message: "Error aceptando union a plan.", err });
+    }
+    res.status(200).json({ message: "Union a plan aceptada correctly" });
+  });
+});
+
+app.post("/denegarUnionAPlan", (req, res) => {
+  const { IdUsuarioPlan } = req.body;
+
+  const query = "DELETE FROM Usuarios_Planes WHERE IdUsuarioPlan = ?";
+  db.query(query, [IdUsuarioPlan], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res
+        .status(500)
+        .json({ message: "Error denegando union a plan.", err });
+    }
+    res.status(200).json({ message: "Union a plan denegada correctly" });
+  });
+});
+
 // #endregion PLANES
 
 // #region CATEGORIAS I SUBCATEGORIAS
