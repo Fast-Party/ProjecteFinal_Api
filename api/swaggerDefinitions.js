@@ -402,6 +402,7 @@ const swaggerDefinitions = {
       },
     },
   },
+
   "/getSeguidos": {
     post: {
       tags: ["Seguimientos"],
@@ -456,6 +457,130 @@ const swaggerDefinitions = {
                   message: {
                     type: "string",
                     example: "Error getting users followed.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  "/seguirUsuario": {
+    post: {
+      tags: ["Seguimientos"],
+      summary: "Follow a user",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdSeguidor: {
+                  type: "integer",
+                },
+                IdSeguido: {
+                  type: "integer",
+                },
+              },
+              required: ["IdSeguidor", "IdSeguido"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "User followed successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  results: {
+                    type: "object",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error following user.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  "/dejarDeSeguirUsuario": {
+    post: {
+      tags: ["Seguimientos"],
+      summary: "Unfollow a user",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdSeguidor: {
+                  type: "integer",
+                },
+                IdSeguido: {
+                  type: "integer",
+                },
+              },
+              required: ["IdSeguidor", "IdSeguido"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "User unfollowed successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  results: {
+                    type: "object",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error unfollowing user.",
                   },
                   err: {
                     type: "string",

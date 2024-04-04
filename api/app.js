@@ -199,6 +199,33 @@ app.post("/getSeguidos", (req, res) => {
   });
 });
 
+app.post("/seguirUsuario", (req, res) => {
+  const { IdSeguidor, IdSeguido } = req.body;
+
+  const query = "INSERT INTO Seguimientos (IdSeguidor, IdSeguido) VALUES (?,?)";
+  db.query(query, [IdSeguidor, IdSeguido], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res.status(500).json({ message: "Error seguir usuario.", err });
+    }
+    res.status(200).json({ message: "Usuario segudio correctamente." });
+  });
+});
+
+app.post("/dejarDeSeguirUsuario", (req, res) => {
+  const { IdSeguidor, IdSeguido } = req.body;
+
+  const query =
+    "DELETE FROM Seguimientos WHERE IdSeguidor = ? AND IdSeguido = ?";
+  db.query(query, [IdSeguidor, IdSeguido], (err, results) => {
+    if (err) {
+      console.error("Error in database query:", err);
+      return res.status(500).json({ message: "Error seguir usuario.", err });
+    }
+    res.status(200).json({ message: "Usuario dejado de seguir correctamente." });
+  });
+});
+
 // #endregion SEGUIMIENTOS
 
 // #region PLANES
