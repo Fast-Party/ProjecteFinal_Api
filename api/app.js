@@ -47,7 +47,7 @@ app.post("/login", (req, res) => {
     if (results.length > 0) {
       res.status(200).json({ isAuthenticated: true });
     } else {
-      res.status(401).json({ isAuthenticated: false });
+      res.status(404).json({ isAuthenticated: false });
     }
   });
 });
