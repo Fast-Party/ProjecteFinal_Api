@@ -29,57 +29,36 @@ db.connect((err) => {
 // #region USUARIOS
 
 app.post("/login", (req, res) => {
-  const { NombreUsuario, Contrasenya } = req.body;
+  try {
+    const { NombreUsuario, Contrasenya } = req.body;
 
-  if (!NombreUsuario || !Contrasenya) {
-    return res
-      .status(400)
-      .json({ message: "Username and password are required." });
+    if (!NombreUsuario || !Contrasenya) {
+      return res
+        .status(400)
+        .json({ message: "Username and password are required." });
+    }
+
+    const query =
+      "SELECT IdUsuario, NombreUsuario FROM Usuarios WHERE NombreUsuario = ? AND Contrasenya = ?";
+    db.query(query, [NombreUsuario, Contrasenya], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(500).json("Error authenticating user.", err);
+      }
+      if (results.length > 0) {
+        res.status(200).json({ isAuthenticated: true });
+      } else {
+        res.status(404).json({ isAuthenticated: false });
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err });
   }
-
-  const query =
-    "SELECT IdUsuario, NombreUsuario FROM Usuarios WHERE NombreUsuario = ? AND Contrasenya = ?";
-  db.query(query, [NombreUsuario, Contrasenya], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res.status(500).json("Error authenticating user.", err);
-    }
-    if (results.length > 0) {
-      res.status(200).json({ isAuthenticated: true });
-    } else {
-      res.status(404).json({ isAuthenticated: false });
-    }
-  });
 });
 
 app.post("/registrarUsuario", (req, res) => {
-  const {
-    NombreUsuario,
-    Nombre,
-    Contrasenya,
-    Email,
-    Telefono,
-    FechaNacimiento,
-    Tipo,
-  } = req.body;
-
-  if (
-    !NombreUsuario ||
-    !Nombre ||
-    !Contrasenya ||
-    !Email ||
-    !Telefono ||
-    !FechaNacimiento ||
-    !Tipo
-  ) {
-    return res.status(400).json({ message: "Fields are required." });
-  }
-
-  const query =
-    "INSERT INTO Usuarios (NombreUsuario, Nombre, Contrasenya, Email, Telefono, FechaNacimiento, Tipo) VALUES (?,?,?,?,?,?,?)";
-  db.query(
-    query,
-    [
+  try {
+    const {
       NombreUsuario,
       Nombre,
       Contrasenya,
@@ -87,45 +66,79 @@ app.post("/registrarUsuario", (req, res) => {
       Telefono,
       FechaNacimiento,
       Tipo,
-    ],
-    (err, results) => {
-      if (err) {
-        console.error("Error in database query:", err);
-        return res
-          .status(500)
-          .json({ message: "Error registering user.", err });
-      }
-      res.status(200).json({ message: "User registered correctly." });
+    } = req.body;
+
+    if (
+      !NombreUsuario ||
+      !Nombre ||
+      !Contrasenya ||
+      !Email ||
+      !Telefono ||
+      !FechaNacimiento ||
+      !Tipo
+    ) {
+      return res.status(400).json({ message: "Fields are required." });
     }
-  );
+
+    const query =
+      "INSERT INTO Usuarios (NombreUsuario, Nombre, Contrasenya, Email, Telefono, FechaNacimiento, Tipo) VALUES (?,?,?,?,?,?,?)";
+    db.query(
+      query,
+      [
+        NombreUsuario,
+        Nombre,
+        Contrasenya,
+        Email,
+        Telefono,
+        FechaNacimiento,
+        Tipo,
+      ],
+      (err, results) => {
+        if (err) {
+          console.error("Error in database query:", err);
+          return res
+            .status(500)
+            .json({ message: "Error registering user.", err });
+        }
+        res.status(200).json({ message: "User registered correctly." });
+      }
+    );
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/buscarUsuarios", (req, res) => {
-  const { NombreUsuario } = req.body;
-  const Nombre = NombreUsuario + "%";
+  try {
+    const { NombreUsuario } = req.body;
+    const Nombre = NombreUsuario + "%";
 
-  const query = `SELECT u.IdUsuario, u.NombreUsuario, u.Nombre, u.Imagen, 
+    const query = `SELECT u.IdUsuario, u.NombreUsuario, u.Nombre, u.Imagen, 
     (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
     AVG(p.Valoracion) AS Valoracion
     FROM Usuarios u
     LEFT JOIN Planes p ON u.IdUsuario = p.IdAutor
     WHERE u.NombreUsuario LIKE ?
     GROUP BY u.IdUsuario, u.NombreUsuario, u.Nombre, u.Imagen;`;
-  db.query(query, [Nombre], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res
-        .status(500)
-        .json({ message: "Error searching for users.", err });
-    }
-    res.status(200).json({ results });
-  });
+    db.query(query, [Nombre], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res
+          .status(500)
+          .json({ message: "Error searching for users.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/perfilUsuario", (req, res) => {
-  const { IdUsuario } = req.body;
+  try {
+    const { IdUsuario } = req.body;
 
-  const query1 = `SELECT u.NombreUsuario, u.Nombre, u.Descripcion, u.FechaNacimiento, u.Imagen, 
+    const query1 = `SELECT u.NombreUsuario, u.Nombre, u.Descripcion, u.FechaNacimiento, u.Imagen, 
                   u.CuentaPrivada, u.Verificado, 
                   (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
                   AVG(p.Valoracion) AS Valoracion
@@ -133,38 +146,41 @@ app.post("/perfilUsuario", (req, res) => {
                   LEFT JOIN Planes p ON u.IdUsuario = p.IdAutor
                   WHERE u.IdUsuario = ?`;
 
-  const query2 = `SELECT * FROM Planes WHERE IdAutor = ?`;
+    const query2 = `SELECT * FROM Planes WHERE IdAutor = ?`;
 
-  Promise.all([
-    new Promise((resolve, reject) => {
-      db.query(query1, [IdUsuario], (err, results) => {
-        if (err) {
-          console.error("Error in database query 1:", err);
-          reject(err);
-        } else {
-          resolve(results);
-        }
+    Promise.all([
+      new Promise((resolve, reject) => {
+        db.query(query1, [IdUsuario], (err, results) => {
+          if (err) {
+            console.error("Error in database query 1:", err);
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        });
+      }),
+      new Promise((resolve, reject) => {
+        db.query(query2, [IdUsuario], (err, results) => {
+          if (err) {
+            console.error("Error in database query 2:", err);
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        });
+      }),
+    ])
+      .then(([perfil, planes]) => {
+        res.status(200).json({ perfil: perfil, planes: planes });
+      })
+      .catch((err) => {
+        res
+          .status(500)
+          .json({ message: "Error getting perfil de usuario.", err });
       });
-    }),
-    new Promise((resolve, reject) => {
-      db.query(query2, [IdUsuario], (err, results) => {
-        if (err) {
-          console.error("Error in database query 2:", err);
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      });
-    }),
-  ])
-    .then(([perfil, planes]) => {
-      res.status(200).json({ perfil: perfil, planes: planes });
-    })
-    .catch((err) => {
-      res
-        .status(500)
-        .json({ message: "Error getting perfil de usuario.", err });
-    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 // #endregion USUARIOS
@@ -172,60 +188,79 @@ app.post("/perfilUsuario", (req, res) => {
 // #region SEGUIMIENTOS
 
 app.post("/getSeguidores", (req, res) => {
-  const { IdUsuario } = req.body;
+  try {
+    const { IdUsuario } = req.body;
 
-  const query = "SELECT IdSeguidor FROM Seguimientos WHERE IdSeguido = ?";
-  db.query(query, [IdUsuario], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res
-        .status(500)
-        .json({ message: "Error getting seguidores.", err });
-    }
-    res.status(200).json({ results });
-  });
+    const query = "SELECT IdSeguidor FROM Seguimientos WHERE IdSeguido = ?";
+    db.query(query, [IdUsuario], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res
+          .status(500)
+          .json({ message: "Error getting seguidores.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/getSeguidos", (req, res) => {
-  const { IdUsuario } = req.body;
+  try {
+    const { IdUsuario } = req.body;
 
-  const query = "SELECT IdSeguido FROM Seguimientos WHERE IdSeguidor = ?";
-  db.query(query, [IdUsuario], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res.status(500).json({ message: "Error getting seguidos.", err });
-    }
-    res.status(200).json({ results });
-  });
+    const query = "SELECT IdSeguido FROM Seguimientos WHERE IdSeguidor = ?";
+    db.query(query, [IdUsuario], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res
+          .status(500)
+          .json({ message: "Error getting seguidos.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/seguirUsuario", (req, res) => {
-  const { IdSeguidor, IdSeguido } = req.body;
+  try {
+    const { IdSeguidor, IdSeguido } = req.body;
 
-  const query = "INSERT INTO Seguimientos (IdSeguidor, IdSeguido) VALUES (?,?)";
-  db.query(query, [IdSeguidor, IdSeguido], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res.status(500).json({ message: "Error seguir usuario.", err });
-    }
-    res.status(200).json({ message: "Usuario segudio correctamente." });
-  });
+    const query =
+      "INSERT INTO Seguimientos (IdSeguidor, IdSeguido) VALUES (?,?)";
+    db.query(query, [IdSeguidor, IdSeguido], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(500).json({ message: "Error seguir usuario.", err });
+      }
+      res.status(200).json({ message: "Usuario segudio correctamente." });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/dejarDeSeguirUsuario", (req, res) => {
-  const { IdSeguidor, IdSeguido } = req.body;
+  try {
+    const { IdSeguidor, IdSeguido } = req.body;
 
-  const query =
-    "DELETE FROM Seguimientos WHERE IdSeguidor = ? AND IdSeguido = ?";
-  db.query(query, [IdSeguidor, IdSeguido], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res.status(500).json({ message: "Error seguir usuario.", err });
-    }
-    res
-      .status(200)
-      .json({ message: "Usuario dejado de seguir correctamente." });
-  });
+    const query =
+      "DELETE FROM Seguimientos WHERE IdSeguidor = ? AND IdSeguido = ?";
+    db.query(query, [IdSeguidor, IdSeguido], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(500).json({ message: "Error seguir usuario.", err });
+      }
+      res
+        .status(200)
+        .json({ message: "Usuario dejado de seguir correctamente." });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 // #endregion SEGUIMIENTOS
@@ -236,40 +271,52 @@ app.post("/dejarDeSeguirUsuario", (req, res) => {
 // #region PLANES
 
 app.get("/getPlanes", (req, res) => {
-  const query = "SELECT * FROM Planes;";
-  db.query(query, [], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res.status(500).json({ message: "Error getting planes.", err });
-    }
-    res.status(200).json({ results });
-  });
+  try {
+    const query = "SELECT * FROM Planes;";
+    db.query(query, [], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(500).json({ message: "Error getting planes.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/getPlanesDeUsuario", (req, res) => {
-  const { IdUsuario } = req.body;
+  try {
+    const { IdUsuario } = req.body;
 
-  const query = "SELECT * FROM Planes WHERE IdAutor = ? ORDER BY Fecha desc;";
-  db.query(query, [IdUsuario], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res.status(500).json({ message: "Error getting planes.", err });
-    }
-    res.status(200).json({ results });
-  });
+    const query = "SELECT * FROM Planes WHERE IdAutor = ? ORDER BY Fecha desc;";
+    db.query(query, [IdUsuario], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(500).json({ message: "Error getting planes.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/getPlanById", (req, res) => {
-  const { IdPlan } = req.body;
+  try {
+    const { IdPlan } = req.body;
 
-  const query = "SELECT * FROM Planes WHERE IdPlan = ?";
-  db.query(query, [IdPlan], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res.status(500).json({ message: "Error getting plan.", err });
-    }
-    res.status(200).json({ results });
-  });
+    const query = "SELECT * FROM Planes WHERE IdPlan = ?";
+    db.query(query, [IdPlan], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(500).json({ message: "Error getting plan.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 /*
 app.post("/postPlan", (req, res) => {
@@ -337,57 +384,71 @@ app.post("/postPlan", (req, res) => {
 */
 
 app.post("/unirseAPlan", (req, res) => {
-  const { IdPlan, IdUsuario, Privado } = req.body;
+  try {
+    const { IdPlan, IdUsuario, Privado } = req.body;
 
-  let estado = 0;
+    let estado = 0;
 
-  if (Privado === true) {
-    estado = 1;
-  } else {
-    estado = 2;
-  }
+    if (Privado === true) {
+      estado = 1;
+    } else {
+      estado = 2;
+    }
 
-  const query = `INSERT INTO Usuarios_Planes (IdUsuario, IdPlan, IdEstado) 
+    const query = `INSERT INTO Usuarios_Planes (IdUsuario, IdPlan, IdEstado) 
   VALUES (?,?,?)
   `;
-  db.query(query, [IdPlan, IdUsuario, estado], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res.status(500).json({ message: "Error uniendose a plan.", err });
-    }
-    res.status(200).json({ message: "Peticion/Union a plan correctly" });
-  });
+    db.query(query, [IdPlan, IdUsuario, estado], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res
+          .status(500)
+          .json({ message: "Error uniendose a plan.", err });
+      }
+      res.status(200).json({ message: "Peticion/Union a plan correctly" });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/aceptarUnionAPlan", (req, res) => {
-  const { IdUsuarioPlan } = req.body;
+  try {
+    const { IdUsuarioPlan } = req.body;
 
-  const query =
-    "UPDATE Usuarios_Planes SET IdEstado = 2 WHERE IdUsuarioPlan = ?";
-  db.query(query, [IdUsuarioPlan], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res
-        .status(500)
-        .json({ message: "Error aceptando union a plan.", err });
-    }
-    res.status(200).json({ message: "Union a plan aceptada correctly" });
-  });
+    const query =
+      "UPDATE Usuarios_Planes SET IdEstado = 2 WHERE IdUsuarioPlan = ?";
+    db.query(query, [IdUsuarioPlan], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res
+          .status(500)
+          .json({ message: "Error aceptando union a plan.", err });
+      }
+      res.status(200).json({ message: "Union a plan aceptada correctly" });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/denegarUnionAPlan", (req, res) => {
-  const { IdUsuarioPlan } = req.body;
+  try {
+    const { IdUsuarioPlan } = req.body;
 
-  const query = "DELETE FROM Usuarios_Planes WHERE IdUsuarioPlan = ?";
-  db.query(query, [IdUsuarioPlan], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res
-        .status(500)
-        .json({ message: "Error denegando union a plan.", err });
-    }
-    res.status(200).json({ message: "Union a plan denegada correctly" });
-  });
+    const query = "DELETE FROM Usuarios_Planes WHERE IdUsuarioPlan = ?";
+    db.query(query, [IdUsuarioPlan], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res
+          .status(500)
+          .json({ message: "Error denegando union a plan.", err });
+      }
+      res.status(200).json({ message: "Union a plan denegada correctly" });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 // #endregion PLANES
@@ -395,121 +456,141 @@ app.post("/denegarUnionAPlan", (req, res) => {
 // #region CATEGORIAS I SUBCATEGORIAS
 
 app.get("/getCategoriasISubcategorias", (req, res) => {
-  const query1 = "SELECT * FROM Categorias;";
-  const query2 = "SELECT * FROM Subcategorias ORDER BY IdCategoria;";
+  try {
+    const query1 = "SELECT * FROM Categorias;";
+    const query2 = "SELECT * FROM Subcategorias ORDER BY IdCategoria;";
 
-  Promise.all([
-    new Promise((resolve, reject) => {
-      db.query(query1, (err, results) => {
-        if (err) {
-          console.error("Error in database query 1:", err);
-          reject(err);
-        } else {
-          resolve(results);
-        }
+    Promise.all([
+      new Promise((resolve, reject) => {
+        db.query(query1, (err, results) => {
+          if (err) {
+            console.error("Error in database query 1:", err);
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        });
+      }),
+      new Promise((resolve, reject) => {
+        db.query(query2, (err, results) => {
+          if (err) {
+            console.error("Error in database query 2:", err);
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        });
+      }),
+    ])
+      .then(([categorias, subcategorias]) => {
+        res
+          .status(200)
+          .json({ categorias: categorias, subcategorias: subcategorias });
+      })
+      .catch((err) => {
+        res
+          .status(500)
+          .json({ message: "Error getting categorias i subcategorias.", err });
       });
-    }),
-    new Promise((resolve, reject) => {
-      db.query(query2, (err, results) => {
-        if (err) {
-          console.error("Error in database query 2:", err);
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      });
-    }),
-  ])
-    .then(([categorias, subcategorias]) => {
-      res
-        .status(200)
-        .json({ categorias: categorias, subcategorias: subcategorias });
-    })
-    .catch((err) => {
-      res
-        .status(500)
-        .json({ message: "Error getting categorias i subcategorias.", err });
-    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/postInteresCategoria", (req, res) => {
-  const { IdUsuario, IdCategoria } = req.body;
+  try {
+    const { IdUsuario, IdCategoria } = req.body;
 
-  if (!IdUsuario || !IdCategoria) {
-    return res.status(400).json({ message: "Fields are required." });
-  }
-
-  const query =
-    "INSERT INTO Intereses_Usuarios_Categorias (IdUsuario, IdCategoria) VALUES (?,?)";
-  db.query(query, [IdUsuario, IdCategoria], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res
-        .status(500)
-        .json({ message: "Error posting interes categoria.", err });
+    if (!IdUsuario || !IdCategoria) {
+      return res.status(400).json({ message: "Fields are required." });
     }
-    res.status(200).json({ message: "Interes posted correctly." });
-  });
+
+    const query =
+      "INSERT INTO Intereses_Usuarios_Categorias (IdUsuario, IdCategoria) VALUES (?,?)";
+    db.query(query, [IdUsuario, IdCategoria], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res
+          .status(500)
+          .json({ message: "Error posting interes categoria.", err });
+      }
+      res.status(200).json({ message: "Interes posted correctly." });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/postInteresSubcategoria", (req, res) => {
-  const { IdUsuario, IdSubcategoria } = req.body;
+  try {
+    const { IdUsuario, IdSubcategoria } = req.body;
 
-  if (!IdUsuario || !IdSubcategoria) {
-    return res.status(400).json({ message: "Fields are required." });
-  }
-
-  const query =
-    "INSERT INTO Intereses_Usuarios_Subcategorias (IdUsuario, IdSubcategoria) VALUES (?,?)";
-  db.query(query, [IdUsuario, IdSubcategoria], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res
-        .status(500)
-        .json({ message: "Error posting interes subcategoria.", err });
+    if (!IdUsuario || !IdSubcategoria) {
+      return res.status(400).json({ message: "Fields are required." });
     }
-    res.status(200).json({ message: "Interes posted correctly." });
-  });
+
+    const query =
+      "INSERT INTO Intereses_Usuarios_Subcategorias (IdUsuario, IdSubcategoria) VALUES (?,?)";
+    db.query(query, [IdUsuario, IdSubcategoria], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res
+          .status(500)
+          .json({ message: "Error posting interes subcategoria.", err });
+      }
+      res.status(200).json({ message: "Interes posted correctly." });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/deleteInteresCategoria", (req, res) => {
-  const { IdUsuario, IdCategoria } = req.body;
+  try {
+    const { IdUsuario, IdCategoria } = req.body;
 
-  if (!IdUsuario || !IdCategoria) {
-    return res.status(400).json({ message: "Fields are required." });
-  }
-
-  const query =
-    "DELETE FROM Intereses_Usuarios_Categorias WHERE IdUsuario = ? AND IdCategoria = ?";
-  db.query(query, [IdUsuario, IdCategoria], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res
-        .status(500)
-        .json({ message: "Error deleting interes categoria.", err });
+    if (!IdUsuario || !IdCategoria) {
+      return res.status(400).json({ message: "Fields are required." });
     }
-    res.status(200).json({ message: "Interes deleted correctly." });
-  });
+
+    const query =
+      "DELETE FROM Intereses_Usuarios_Categorias WHERE IdUsuario = ? AND IdCategoria = ?";
+    db.query(query, [IdUsuario, IdCategoria], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res
+          .status(500)
+          .json({ message: "Error deleting interes categoria.", err });
+      }
+      res.status(200).json({ message: "Interes deleted correctly." });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 app.post("/deleteInteresSubcategoria", (req, res) => {
-  const { IdUsuario, IdSubcategoria } = req.body;
+  try {
+    const { IdUsuario, IdSubcategoria } = req.body;
 
-  if (!IdUsuario || !IdSubcategoria) {
-    return res.status(400).json({ message: "Fields are required." });
-  }
-
-  const query =
-    "DELETE FROM Intereses_Usuarios_Subcategorias WHERE IdUsuario = ? AND IdSubcategoria = ?";
-  db.query(query, [IdUsuario, IdSubcategoria], (err, results) => {
-    if (err) {
-      console.error("Error in database query:", err);
-      return res
-        .status(500)
-        .json({ message: "Error deleting interes categoria.", err });
+    if (!IdUsuario || !IdSubcategoria) {
+      return res.status(400).json({ message: "Fields are required." });
     }
-    res.status(200).json({ message: "Interes deleted correctly." });
-  });
+
+    const query =
+      "DELETE FROM Intereses_Usuarios_Subcategorias WHERE IdUsuario = ? AND IdSubcategoria = ?";
+    db.query(query, [IdUsuario, IdSubcategoria], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res
+          .status(500)
+          .json({ message: "Error deleting interes categoria.", err });
+      }
+      res.status(200).json({ message: "Interes deleted correctly." });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
 });
 
 // #endregion CATEGORIAS I SUBCATEGORIAS
