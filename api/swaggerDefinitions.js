@@ -769,7 +769,7 @@ const swaggerDefinitions = {
       },
     },
   },
-  /*
+
   "/postPlan": {
     post: {
       tags: ["Planes"],
@@ -868,7 +868,7 @@ const swaggerDefinitions = {
       },
     },
   },
-*/
+
   "/unirseAPlan": {
     post: {
       tags: ["Planes"],

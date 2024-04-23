@@ -318,32 +318,16 @@ app.post("/getPlanById", (req, res) => {
     return res.status(500).json({ message: err });
   }
 });
-/*
+
 app.post("/postPlan", (req, res) => {
-  const {
-    IdAutor,
-    Titulo,
-    Fecha,
-    ZonaHoraria,
-    Duracion,
-    Localizacion,
-    AforoMaximo,
-    EdadMinima,
-    EdadMaxima,
-    Descripcion,
-    PlanPrivado,
-    DePago,
-    Precio,
-    FechaPublicacion,
-  } = req.body;
+  const { plan } = req.body;
 
   if (
-    !IdAutor ||
-    !Titulo ||
-    !Fecha ||
-    !ZonaHoraria ||
-    !Localizacion ||
-    !FechaPublicacion
+    !plan.IdAutor ||
+    !plan.Titulo ||
+    !plan.Fecha ||
+    !plan.ZonaHoraria ||
+    !plan.Localizacion
   ) {
     return res
       .status(400)
@@ -351,26 +335,25 @@ app.post("/postPlan", (req, res) => {
   }
 
   const query = `INSERT INTO Planes (IdAutor, Titulo, Fecha, ZonaHoraria, Duracion, Localizacion, 
-      AforoMaximo, EdadMinima, EdadMaxima, Descripcion, PlanPrivado, DePago, Precio, FechaPublicacion)
-      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+      AforoMaximo, EdadMinima, EdadMaxima, Descripcion, PlanPrivado, DePago, Precio)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
     `;
   db.query(
     query,
     [
-      IdAutor,
-      Titulo,
-      Fecha,
-      ZonaHoraria,
-      Duracion,
-      Localizacion,
-      AforoMaximo,
-      EdadMinima,
-      EdadMaxima,
-      Descripcion,
-      PlanPrivado,
-      DePago,
-      Precio,
-      FechaPublicacion,
+      plan.IdAutor,
+      plan.Titulo,
+      plan.Fecha,
+      plan.ZonaHoraria,
+      plan.Duracion,
+      plan.Localizacion,
+      plan.AforoMaximo,
+      plan.EdadMinima,
+      plan.EdadMaxima,
+      plan.Descripcion,
+      plan.PlanPrivado,
+      plan.DePago,
+      plan.Precio,
     ],
     (err, results) => {
       if (err) {
@@ -381,7 +364,6 @@ app.post("/postPlan", (req, res) => {
     }
   );
 });
-*/
 
 app.post("/unirseAPlan", (req, res) => {
   try {
