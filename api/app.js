@@ -265,9 +265,6 @@ app.post("/dejarDeSeguirUsuario", (req, res) => {
 
 // #endregion SEGUIMIENTOS
 
-/*
-  ! Revisar POST PLAN
-*/
 // #region PLANES
 
 app.get("/getPlanes", (req, res) => {
@@ -276,7 +273,7 @@ app.get("/getPlanes", (req, res) => {
     db.query(query, [], (err, results) => {
       if (err) {
         console.error("Error in database query:", err);
-        return res.status(500).json({ message: "Error getting planes.", err });
+        return res.status(404).json({ message: "Error getting planes.", err });
       }
       res.status(200).json({ results });
     });
@@ -320,14 +317,14 @@ app.post("/getPlanById", (req, res) => {
 });
 
 app.post("/postPlan", (req, res) => {
-  const { plan } = req.body;
+  const plan = req.body;
 
   if (
-    !plan.IdAutor ||
-    !plan.Titulo ||
-    !plan.Fecha ||
-    !plan.ZonaHoraria ||
-    !plan.Localizacion
+    plan.IdAutor == null ||
+    plan.Titulo == null ||
+    plan.Fecha == null ||
+    plan.ZonaHoraria == null ||
+    plan.Localizacion == null
   ) {
     return res
       .status(400)
