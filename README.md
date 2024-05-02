@@ -12,5 +12,5 @@ Finalment, executa la comanda "node app.js" per iniciar l'api.
 ## Com executar Swagger
 
 El projecte compte amb una eina, anomenada Swagger, implememtada. Aquesta permet testejar els endpoints de l'api de manera fàcil i ràpida.
-Per executar Swagger s'ha d'haver iniciat el projecte. Amb aquest executat, s'haurà d'accedir al navegador i introduir el següent link: http://localhost:3000/api-docs/
+Per executar Swagger s'ha d'haver iniciat el projecte. Amb aquest executat, s'haurà d'accedir al navegador i introduir el següent link: http://localhost:3000/api-docs/.
 Aquest link et portarà a la pàgina on s'han implementat tots els endpoints i les seves instruccions. Allà seràs capaç de comprovar el seu correcte funcionament. 
