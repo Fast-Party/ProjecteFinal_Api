@@ -332,6 +332,88 @@ const swaggerDefinitions = {
     },
   },
 
+  "/updatePerfilUsuario": {
+    post: {
+      tags: ["Usuarios"],
+      summary: "Actualizar Perfil de Usuario",
+      description: "Actualiza el perfil de usuario en la base de datos",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                Descripcion: {
+                  type: "string",
+                  description: "Nueva descripción del usuario",
+                },
+                FechaNacimiento: {
+                  type: "string",
+                  format: "date",
+                  description: "Nueva fecha de nacimiento del usuario",
+                },
+                Localidad: {
+                  type: "string",
+                  description: "Nueva localidad del usuario",
+                },
+                Imagen: {
+                  type: "string",
+                  description: "Nueva imagen del usuario",
+                },
+                CuentaPrivada: {
+                  type: "boolean",
+                  description: "Nuevo estado de privacidad de la cuenta del usuario",
+                },
+                IdUsuario: {
+                  type: "integer",
+                  description: "ID del usuario a actualizar",
+                  required: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Perfil de usuario actualizado correctamente",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  results: {
+                    type: "object",
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Error interno del servidor",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error actualizando perfil de usuario.",
+                  },
+                  err: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
   // #endregion USUARIOS
 
   // #region SEGUIMIENTOS
@@ -596,9 +678,6 @@ const swaggerDefinitions = {
 
   //#endregion SEGUIMIENTOS
 
-  /* 
-  !!! Revisar POST PLAN
-  */
   // #region PLANES
 
   "/getPlanes": {

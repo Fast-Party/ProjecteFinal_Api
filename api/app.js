@@ -183,6 +183,53 @@ app.post("/perfilUsuario", (req, res) => {
   }
 });
 
+app.post("/updatePerfilUsuario", (req, res) => {
+  try {
+    const usuario = req.body;
+    const queryParams = [];
+    let setClause = "";
+
+    if (usuario.Descripcion !== undefined) {
+      setClause += "Descripcion = ?, ";
+      queryParams.push(usuario.Descripcion);
+    }
+    if (usuario.FechaNacimiento !== undefined) {
+      setClause += "FechaNacimiento = ?, ";
+      queryParams.push(usuario.FechaNacimiento);
+    }
+    if (usuario.Localidad !== undefined) {
+      setClause += "Localidad = ?, ";
+      queryParams.push(usuario.Localidad);
+    }
+    if (usuario.Imagen !== undefined) {
+      setClause += "Imagen = ?, ";
+      queryParams.push(usuario.Imagen);
+    }
+    if (usuario.CuentaPrivada !== undefined) {
+      setClause += "CuentaPrivada = ?, ";
+      queryParams.push(usuario.CuentaPrivada);
+    }
+
+    setClause = setClause.slice(0, -2);
+
+    const query = `UPDATE Usuarios SET ${setClause} WHERE IdUsuario = ?`;
+
+    queryParams.push(usuario.IdUsuario);
+
+    db.query(query, queryParams, (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res
+          .status(500)
+          .json({ message: "Error searching for users.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
+});
+
 // #endregion USUARIOS
 
 // #region SEGUIMIENTOS
