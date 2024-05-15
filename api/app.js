@@ -331,12 +331,12 @@ app.post("/dejarDeSeguirUsuario", (req, res) => {
 
 app.get("/getPlanes", (req, res) => {
   try {
-    const query = `SELECT p.*, Usuario.Nombre, Usuario.LocalidadUsuario, Usuario.Seguidores, Usuario.Rating, Following
+    const query = `SELECT p.*, Usuario.Nombre, Usuario.LocalidadUsuario, Usuario.Seguidores, Usuario.Rating AS RatingUsuario, IsFollowing
     FROM Planes p, 
-    (select u.IdUsuario, u.NombreUsuario as Nombre, u.Localidad as LocalidadUsuario,
+    (SELECT u.IdUsuario, u.NombreUsuario AS Nombre, u.Localidad AS LocalidadUsuario,
     (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
     (SELECT AVG(p.Valoracion) FROM Planes p WHERE p.IdAutor = u.IdUsuario) AS Rating,
-    (SELECT IdSeguimiento FROM Seguimientos WHERE IdSeguidor = ? AND IdSeguido = u.IdUsuario) AS Following
+    (SELECT IdSeguimiento FROM Seguimientos WHERE IdSeguidor = ? AND IdSeguido = u.IdUsuario) AS IsFollowing
     FROM Usuarios u LEFT JOIN Seguimientos s
     ON u.IdUsuario = s.IdSeguido
     GROUP BY u.IdUsuario) AS Usuario
