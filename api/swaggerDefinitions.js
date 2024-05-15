@@ -728,10 +728,24 @@ const swaggerDefinitions = {
   },*/
 
   "/getPlanes": {
-    "get": {
+    "post": {
       "tags": ["Planes"],
       "summary": "Get planes",
-      "description": "Retrieve planes along with associated user information",
+      "description": "Retrieve plans along with associated user information",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "IdUsuario": { "type": "integer" }
+              },
+              "required": ["IdUsuario"]
+            }
+          }
+        }
+      },
       "responses": {
         "200": {
           "description": "Planes retrieved successfully",
@@ -745,17 +759,7 @@ const swaggerDefinitions = {
                     "items": {
                       "type": "object",
                       "properties": {
-                        "IdPlan": { "type": "integer" },
-                        "NombrePlan": { "type": "string" },
-                        "Descripcion": { "type": "string" },
-                        "FechaInicio": { "type": "string", "format": "date" },
-                        "FechaFin": { "type": "string", "format": "date" },
-                        "IdAutor": { "type": "integer" },
-                        "NombreAutor": { "type": "string" },
-                        "LocalidadAutor": { "type": "string" },
-                        "SeguidoresAutor": { "type": "integer" },
-                        "RatingAutor": { "type": "number" },
-                        "Following": { "type": "integer" } // Assuming Following is of integer type
+                        // Define properties of the returned results here based on your database schema
                       }
                     }
                   }
@@ -773,6 +777,19 @@ const swaggerDefinitions = {
                 "properties": {
                   "message": { "type": "string" },
                   "err": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": { "type": "string" }
                 }
               }
             }

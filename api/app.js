@@ -329,8 +329,10 @@ app.post("/dejarDeSeguirUsuario", (req, res) => {
   }
 });*/
 
-app.get("/getPlanes", (req, res) => {
+app.post("/getPlanes", (req, res) => {
   try {
+    const { IdUsuario } = req.body;
+
     const query = `SELECT p.*, Usuario.Nombre, Usuario.LocalidadUsuario, Usuario.Seguidores, Usuario.Rating AS RatingUsuario, IsFollowing
     FROM Planes p, 
     (SELECT u.IdUsuario, u.NombreUsuario AS Nombre, u.Localidad AS LocalidadUsuario,
@@ -341,7 +343,7 @@ app.get("/getPlanes", (req, res) => {
     ON u.IdUsuario = s.IdSeguido
     GROUP BY u.IdUsuario) AS Usuario
     WHERE p.IdAutor = Usuario.IdUsuario;`;
-    db.query(query, [1], (err, results) => {
+    db.query(query, [IdUsuario], (err, results) => {
       if (err) {
         console.error("Error in database query:", err);
         return res.status(404).json({ message: "Error getting planes.", err });
