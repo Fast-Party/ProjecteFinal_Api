@@ -39,17 +39,13 @@ app.post("/login", (req, res) => {
     }
 
     const query =
-      "SELECT IdUsuario, NombreUsuario FROM Usuarios WHERE NombreUsuario = ? AND Contrasenya = ?";
+      "SELECT IdUsuario FROM Usuarios WHERE NombreUsuario = ? AND Contrasenya = ?";
     db.query(query, [NombreUsuario, Contrasenya], (err, results) => {
       if (err) {
         console.error("Error in database query:", err);
         return res.status(500).json("Error authenticating user.", err);
       }
-      if (results.length > 0) {
-        res.status(200).json({ isAuthenticated: true });
-      } else {
-        res.status(404).json({ isAuthenticated: false });
-      }
+      res.status(200).json(results);
     });
   } catch (err) {
     return res.status(500).json({ message: err });
