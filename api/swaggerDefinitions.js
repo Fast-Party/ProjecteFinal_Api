@@ -680,7 +680,7 @@ const swaggerDefinitions = {
 
   // #region PLANES
 
-  "/getPlanes": {
+  /*"/getPlanes": {
     get: {
       tags: ["Planes"], // Add a tag to group endpoints
       summary: "Get Planes",
@@ -725,6 +725,61 @@ const swaggerDefinitions = {
         },
       },
     },
+  },*/
+
+  "/getPlanes": {
+    "get": {
+      "tags": ["Planes"],
+      "summary": "Get planes",
+      "description": "Retrieve planes along with associated user information",
+      "responses": {
+        "200": {
+          "description": "Planes retrieved successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "results": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "IdPlan": { "type": "integer" },
+                        "NombrePlan": { "type": "string" },
+                        "Descripcion": { "type": "string" },
+                        "FechaInicio": { "type": "string", "format": "date" },
+                        "FechaFin": { "type": "string", "format": "date" },
+                        "IdAutor": { "type": "integer" },
+                        "NombreAutor": { "type": "string" },
+                        "LocalidadAutor": { "type": "string" },
+                        "SeguidoresAutor": { "type": "integer" },
+                        "RatingAutor": { "type": "number" },
+                        "Following": { "type": "integer" } // Assuming Following is of integer type
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Error getting planes",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": { "type": "string" },
+                  "err": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   },
 
   "/getPlanesDeUsuario": {

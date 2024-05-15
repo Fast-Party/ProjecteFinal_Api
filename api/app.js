@@ -314,10 +314,34 @@ app.post("/dejarDeSeguirUsuario", (req, res) => {
 
 // #region PLANES
 
-app.get("/getPlanes", (req, res) => {
+/*app.get("/getPlanes", (req, res) => {
   try {
     const query = "SELECT * FROM Planes;";
     db.query(query, [], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(404).json({ message: "Error getting planes.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
+});*/
+
+app.get("/getPlanes", (req, res) => {
+  try {
+    const query = `SELECT p.*, Usuario.Nombre, Usuario.LocalidadUsuario, Usuario.Seguidores, Usuario.Rating, Following
+    FROM Planes p, 
+    (select u.IdUsuario, u.NombreUsuario as Nombre, u.Localidad as LocalidadUsuario,
+    (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
+    (SELECT AVG(p.Valoracion) FROM Planes p WHERE p.IdAutor = u.IdUsuario) AS Rating,
+    (SELECT IdSeguimiento FROM Seguimientos WHERE IdSeguidor = ? AND IdSeguido = u.IdUsuario) AS Following
+    FROM Usuarios u LEFT JOIN Seguimientos s
+    ON u.IdUsuario = s.IdSeguido
+    GROUP BY u.IdUsuario) AS Usuario
+    WHERE p.IdAutor = Usuario.IdUsuario;`;
+    db.query(query, [1], (err, results) => {
       if (err) {
         console.error("Error in database query:", err);
         return res.status(404).json({ message: "Error getting planes.", err });
