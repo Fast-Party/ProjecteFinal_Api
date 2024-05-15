@@ -329,9 +329,9 @@ app.post("/getPlanes", (req, res) => {
   try {
     const { IdUsuario } = req.body;
 
-    const query = `SELECT p.*, Usuario.NombreAutor, Usuario.LocalidadUsuario, Usuario.Seguidores, Usuario.Rating AS RatingAutor, IsFollowing
+    const query = `SELECT p.*, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, IsFollowing
     FROM Planes p, 
-    (SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Localidad AS LocalidadUsuario,
+    (SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Localidad AS LocalidadAutor,
     (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
     (SELECT AVG(p.Valoracion) FROM Planes p WHERE p.IdAutor = u.IdUsuario) AS Rating,
     (SELECT IdSeguimiento FROM Seguimientos WHERE IdSeguidor = ? AND IdSeguido = u.IdUsuario) AS IsFollowing
