@@ -52,6 +52,48 @@ app.post("/login", (req, res) => {
   }
 });
 
+app.post("/nombreUsuarioLibre", (req, res) => {
+  try {
+    const { NombreUsuario } = req.body;
+
+    if (!NombreUsuario) {
+      return res.status(400).json({ message: "Username is required." });
+    }
+
+    const query = "SELECT IdUsuario FROM Usuarios WHERE NombreUsuario = ?;";
+    db.query(query, [NombreUsuario], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(500).json("Error authenticating user.", err);
+      }
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err });
+  }
+});
+
+app.post("/correoLibre", (req, res) => {
+  try {
+    const { Email } = req.body;
+
+    if (!Email) {
+      return res.status(400).json({ message: "Email is required." });
+    }
+
+    const query = "SELECT IdUsuario FROM Usuarios WHERE Email = ?;";
+    db.query(query, [Email], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(500).json("Error authenticating user.", err);
+      }
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err });
+  }
+});
+
 app.post("/registrarUsuario", (req, res) => {
   try {
     const {

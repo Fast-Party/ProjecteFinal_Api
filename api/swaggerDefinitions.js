@@ -93,6 +93,137 @@ const swaggerDefinitions = {
     },
   },
 
+  "/nombreUsuarioLibre": {
+    post: {
+      tags: ["Usuarios"],
+      summary: "Check username availability",
+      description: "Check if the provided username is available",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                NombreUsuario: { type: "string" },
+              },
+              required: ["NombreUsuario"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Username availability checked successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    IdUsuario: { type: "integer" },
+                  },
+                },
+              },
+            },
+          },
+        },
+        400: {
+          description: "Bad request",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "/correoLibre": {
+    post: {
+      tags: ["Usuarios"],
+      summary: "Check email availability",
+      description: "Check if the provided email is available",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                Email: { type: "string", format: "email" },
+              },
+              required: ["Email"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Email availability checked successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    IdUsuario: { type: "integer" },
+                  },
+                },
+              },
+            },
+          },
+        },
+        400: {
+          description: "Bad request",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
   "/registrarUsuario": {
     post: {
       tags: ["Usuarios"], // Add a tag to group endpoints
@@ -363,7 +494,8 @@ const swaggerDefinitions = {
                 },
                 CuentaPrivada: {
                   type: "boolean",
-                  description: "Nuevo estado de privacidad de la cuenta del usuario",
+                  description:
+                    "Nuevo estado de privacidad de la cuenta del usuario",
                 },
                 IdUsuario: {
                   type: "integer",
@@ -728,75 +860,75 @@ const swaggerDefinitions = {
   },*/
 
   "/getPlanes": {
-    "post": {
-      "tags": ["Planes"],
-      "summary": "Get planes",
-      "description": "Retrieve plans along with associated user information",
-      "requestBody": {
-        "required": true,
-        "content": {
+    post: {
+      tags: ["Planes"],
+      summary: "Get planes",
+      description: "Retrieve plans along with associated user information",
+      requestBody: {
+        required: true,
+        content: {
           "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "IdUsuario": { "type": "integer" }
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: { type: "integer" },
               },
-              "required": ["IdUsuario"]
-            }
-          }
-        }
+              required: ["IdUsuario"],
+            },
+          },
+        },
       },
-      "responses": {
-        "200": {
-          "description": "Planes retrieved successfully",
-          "content": {
+      responses: {
+        200: {
+          description: "Planes retrieved successfully",
+          content: {
             "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "results": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
+              schema: {
+                type: "object",
+                properties: {
+                  results: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
                         // Define properties of the returned results here based on your database schema
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
-        "404": {
-          "description": "Error getting planes",
-          "content": {
+        404: {
+          description: "Error getting planes",
+          content: {
             "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": { "type": "string" },
-                  "err": { "type": "string" }
-                }
-              }
-            }
-          }
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                  err: { type: "string" },
+                },
+              },
+            },
+          },
         },
-        "500": {
-          "description": "Internal Server Error",
-          "content": {
+        500: {
+          description: "Internal Server Error",
+          content: {
             "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": { "type": "string" }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 
   "/getPlanesDeUsuario": {
