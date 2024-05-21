@@ -371,7 +371,7 @@ app.post("/getPlanes", (req, res) => {
   try {
     const { IdUsuario } = req.body;
 
-    const query = `SELECT p.*, pi.Ruta, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, IsFollowing
+    /*const query = `SELECT p.*, pi.Ruta, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, IsFollowing
     FROM Planes p LEFT JOIN Planes_Imagenes pi 
     ON p.IdPlan = pi.IdPlan, 
     (SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Localidad AS LocalidadAutor,
@@ -381,7 +381,21 @@ app.post("/getPlanes", (req, res) => {
     FROM Usuarios u LEFT JOIN Seguimientos s
     ON u.IdUsuario = s.IdSeguido
     GROUP BY u.IdUsuario) AS Usuario
-    WHERE p.IdAutor = Usuario.IdUsuario;`;
+    WHERE p.IdAutor = Usuario.IdUsuario;`;*/
+    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing
+    FROM Planes p LEFT JOIN (
+      SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Localidad AS LocalidadAutor,
+        (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
+        (SELECT AVG(p.Valoracion) FROM Planes p WHERE p.IdAutor = u.IdUsuario) AS Rating,
+        (SELECT IdSeguimiento FROM Seguimientos WHERE IdSeguidor = 1 AND IdSeguido = u.IdUsuario) AS IsFollowing
+      FROM Usuarios u
+      GROUP BY u.IdUsuario) AS Usuario ON p.IdAutor = Usuario.IdUsuario
+    LEFT JOIN ( 
+      SELECT pi.IdPlan, pi.Ruta 
+      FROM Planes_Imagenes pi
+      WHERE pi.Orden = 1) AS pi ON p.IdPlan = pi.IdPlan
+    WHERE p.IdAutor = Usuario.IdUsuario
+    ORDER BY p.IdPlan;`;
     db.query(query, [IdUsuario], (err, results) => {
       if (err) {
         console.error("Error in database query:", err);
