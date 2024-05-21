@@ -371,8 +371,9 @@ app.post("/getPlanes", (req, res) => {
   try {
     const { IdUsuario } = req.body;
 
-    const query = `SELECT p.*, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, IsFollowing
-    FROM Planes p, 
+    const query = `SELECT p.*, pi.Ruta, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, IsFollowing
+    FROM Planes p LEFT JOIN Planes_Imagenes pi 
+    ON p.IdPlan = pi.IdPlan, 
     (SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Localidad AS LocalidadAutor,
     (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
     (SELECT AVG(p.Valoracion) FROM Planes p WHERE p.IdAutor = u.IdUsuario) AS Rating,
