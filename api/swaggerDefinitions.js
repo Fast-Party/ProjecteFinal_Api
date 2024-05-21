@@ -463,6 +463,101 @@ const swaggerDefinitions = {
     },
   },
 
+  "/getInfoUsuarioLogged": {
+    post: {
+      tags: ["Usuarios"],
+      summary: "Obtener información del usuario logueado",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: {
+                  type: "integer",
+                  description: "ID del usuario",
+                  example: 1
+                }
+              },
+              required: ["IdUsuario"]
+            }
+          }
+        }
+      },
+      responses: {
+        200: {
+          description: "Información del usuario obtenida con éxito",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  results: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        NombreUsuario: {
+                          type: "string",
+                          example: "usuario123"
+                        },
+                        Email: {
+                          type: "string",
+                          format: "email",
+                          example: "usuario123@example.com"
+                        },
+                        Imagen: {
+                          type: "string",
+                          example: "url_de_la_imagen.jpg"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        400: {
+          description: "Solicitud incorrecta",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "ID de usuario es requerido."
+                  }
+                }
+              }
+            }
+          }
+        },
+        500: {
+          description: "Error interno del servidor",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                    example: "Error obteniendo información del usuario."
+                  },
+                  err: {
+                    type: "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
   "/updatePerfilUsuario": {
     post: {
       tags: ["Usuarios"],

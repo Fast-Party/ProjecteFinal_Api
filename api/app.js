@@ -221,6 +221,24 @@ app.post("/perfilUsuario", (req, res) => {
   }
 });
 
+app.post("/getInfoUsuarioLogged", (req, res) => {
+  try {
+    const { IdUsuario } = req.body;
+
+    const query =
+      "SELECT NombreUsuario, Email, Imagen FROM Usuarios WHERE IdUsuario = ?";
+    db.query(query, [IdUsuario], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(500).json({ message: "Error getting plan.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
+});
+
 app.post("/updatePerfilUsuario", (req, res) => {
   try {
     const usuario = req.body;
@@ -429,7 +447,12 @@ app.post("/getPlanById", (req, res) => {
   try {
     const { IdPlan } = req.body;
 
-    const query = "SELECT * FROM Planes WHERE IdPlan = ?";
+    //const query = "SELECT * FROM Planes WHERE IdPlan = ?";
+    const query = `SELECT p.*, JSON_ARRAYAGG(JSON_OBJECT('Ruta', pi.Ruta, 'Orden', pi.Orden)) AS Imagenes
+    FROM Planes p
+    LEFT JOIN Planes_Imagenes pi ON p.IdPlan = pi.IdPlan
+    WHERE p.IdPlan = 3
+    GROUP BY p.IdPlan;`;
     db.query(query, [IdPlan], (err, results) => {
       if (err) {
         console.error("Error in database query:", err);
