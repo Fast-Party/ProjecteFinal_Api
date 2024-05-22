@@ -400,9 +400,9 @@ app.post("/getPlanes", (req, res) => {
     ON u.IdUsuario = s.IdSeguido
     GROUP BY u.IdUsuario) AS Usuario
     WHERE p.IdAutor = Usuario.IdUsuario;`;*/
-    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.IdUsuario, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing
+    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.IdUsuario, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing, ImagenLogoAutor
     FROM Planes p LEFT JOIN (
-      SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Localidad AS LocalidadAutor,
+      SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Localidad AS LocalidadAutor, u.Imagen AS ImagenLogoAutor,
         (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
         (SELECT AVG(p.Valoracion) FROM Planes p WHERE p.IdAutor = u.IdUsuario) AS Rating,
         (SELECT IdSeguimiento FROM Seguimientos WHERE IdSeguidor = 1 AND IdSeguido = u.IdUsuario) AS IsFollowing
@@ -447,11 +447,10 @@ app.post("/getPlanById", (req, res) => {
   try {
     const { IdPlan } = req.body;
 
-    //const query = "SELECT * FROM Planes WHERE IdPlan = ?";
     const query = `SELECT p.*, JSON_ARRAYAGG(JSON_OBJECT('Ruta', pi.Ruta, 'Orden', pi.Orden)) AS Imagenes
     FROM Planes p
     LEFT JOIN Planes_Imagenes pi ON p.IdPlan = pi.IdPlan
-    WHERE p.IdPlan = 3
+    WHERE p.IdPlan = ?
     GROUP BY p.IdPlan;`;
     db.query(query, [IdPlan], (err, results) => {
       if (err) {
