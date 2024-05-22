@@ -400,7 +400,7 @@ app.post("/getPlanes", (req, res) => {
     ON u.IdUsuario = s.IdSeguido
     GROUP BY u.IdUsuario) AS Usuario
     WHERE p.IdAutor = Usuario.IdUsuario;`;*/
-    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing
+    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.IdUsuario, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing
     FROM Planes p LEFT JOIN (
       SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Localidad AS LocalidadAutor,
         (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
