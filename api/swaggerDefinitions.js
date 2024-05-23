@@ -1119,6 +1119,91 @@ const swaggerDefinitions = {
     },
   },
 
+  "/getPlanesAutoresSeguidos": {
+    post: {
+      tags: ["Planes"],
+      summary: "Get plans of followed authors",
+      description: "Fetch plans created by the authors followed by the user",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: { type: "integer" },
+              },
+              required: ["IdUsuario"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Plans fetched successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  results: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        IdPlan: { type: "integer" },
+                        Titulo: { type: "string" },
+                        Descripcion: { type: "string" },
+                        Fecha: { type: "string", format: "date" },
+                        RutaImagenPlan: { type: "string" },
+                        IdUsuario: { type: "integer" },
+                        NombreAutor: { type: "string" },
+                        LocalidadAutor: { type: "string" },
+                        Seguidores: { type: "integer" },
+                        RatingAutor: { type: "number", format: "float" },
+                        IsFollowing: { type: "boolean" },
+                        ImagenLogoAutor: { type: "string" },
+                        Verificado: { type: "boolean" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        404: {
+          description: "Error getting plans",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                  err: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                  err: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
   "/getPlanesDeUsuario": {
     post: {
       tags: ["Planes"],
