@@ -643,6 +643,99 @@ const swaggerDefinitions = {
 
   // #endregion USUARIOS
 
+  // #region AUTORES
+
+  "/perfilAutor": {
+    post: {
+      tags: ["Autores"],
+      summary: "Get perfil de autor",
+      description: "Fetch detailed information about the author profile",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: { type: "integer" },
+              },
+              required: ["IdUsuario"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Author profile fetched successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  perfil: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        NombreUsuario: { type: "string" },
+                        Nombre: { type: "string" },
+                        Descripcion: { type: "string" },
+                        FechaNacimiento: { type: "string", format: "date" },
+                        Imagen: { type: "string" },
+                        CuentaPrivada: { type: "boolean" },
+                        Verificado: { type: "boolean" },
+                        Seguidores: { type: "integer" },
+                        Valoracion: { type: "number", format: "float" },
+                      },
+                    },
+                  },
+                  planes: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        // Define the properties of a plan here
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        400: {
+          description: "Bad request",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                  err: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  // #endregion AUTORES
+
   // #region SEGUIMIENTOS
 
   "/getSeguidores": {

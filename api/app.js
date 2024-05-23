@@ -288,6 +288,77 @@ app.post("/updatePerfilUsuario", (req, res) => {
 
 // #endregion USUARIOS
 
+// #region AUTORES
+
+app.post("/perfilAutor", (req, res) => {
+  try {
+    const { IdUsuario } = req.body;
+
+    const query1 = `SELECT u.NombreUsuario, u.Nombre, u.Descripcion, u.FechaNacimiento, u.Imagen, 
+                  u.CuentaPrivada, u.Verificado, 
+                  (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
+                  AVG(p.Valoracion) AS Valoracion
+                  FROM Usuarios u 
+                  LEFT JOIN Planes p ON u.IdUsuario = p.IdAutor
+                  WHERE u.IdUsuario = ?`;
+
+    const query2 = `SELECT * FROM Planes WHERE IdAutor = ?`;
+
+    const query3 = `SELECT COUNT(IdPlan) AS PlanesCreados FROM Planes WHERE IdAutor = ? AND Fecha < now();`;
+
+    Promise.all([
+      new Promise((resolve, reject) => {
+        db.query(query1, [IdUsuario], (err, results) => {
+          if (err) {
+            console.error("Error in database query 1:", err);
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        });
+      }),
+      new Promise((resolve, reject) => {
+        db.query(query2, [IdUsuario], (err, results) => {
+          if (err) {
+            console.error("Error in database query 2:", err);
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        });
+      }),
+      new Promise((resolve, reject) => {
+        db.query(query3, [IdUsuario], (err, results) => {
+          if (err) {
+            console.error("Error in database query 3:", err);
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        });
+      }),
+    ])
+      .then(([perfil, planes, planesCreados]) => {
+        res
+          .status(200)
+          .json({
+            perfil: perfil,
+            planes: planes,
+            planesCreados: planesCreados,
+          });
+      })
+      .catch((err) => {
+        res
+          .status(500)
+          .json({ message: "Error getting perfil de usuario.", err });
+      });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
+});
+
+// #endregion AUTORES
+
 // #region SEGUIMIENTOS
 
 app.post("/getSeguidores", (req, res) => {
@@ -385,7 +456,7 @@ app.post("/dejarDeSeguirUsuario", (req, res) => {
   }
 });*/
 
-app.post("/getPlanes", (req, res) => {
+app.get("/getPlanes", (req, res) => {
   try {
     const { IdUsuario } = req.body;
 
