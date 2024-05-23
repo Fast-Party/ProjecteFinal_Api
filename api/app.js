@@ -296,6 +296,7 @@ app.post("/perfilAutor", (req, res) => {
 
     const query1 = `SELECT u.NombreUsuario, u.Nombre, u.Descripcion, u.FechaNacimiento, u.Imagen, 
                   u.CuentaPrivada, u.Verificado, 
+                  (SELECT COUNT(IdPlan) AS PlanesCreados FROM Planes WHERE IdAutor = ? AND Fecha < now()) AS PlanesCreados,
                   (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
                   AVG(p.Valoracion) AS Valoracion
                   FROM Usuarios u 
@@ -304,11 +305,9 @@ app.post("/perfilAutor", (req, res) => {
 
     const query2 = `SELECT * FROM Planes WHERE IdAutor = ?`;
 
-    const query3 = `SELECT COUNT(IdPlan) AS PlanesCreados FROM Planes WHERE IdAutor = ? AND Fecha < now();`;
-
     Promise.all([
       new Promise((resolve, reject) => {
-        db.query(query1, [IdUsuario], (err, results) => {
+        db.query(query1, [IdUsuario, IdUsuario], (err, results) => {
           if (err) {
             console.error("Error in database query 1:", err);
             reject(err);
@@ -327,25 +326,12 @@ app.post("/perfilAutor", (req, res) => {
           }
         });
       }),
-      new Promise((resolve, reject) => {
-        db.query(query3, [IdUsuario], (err, results) => {
-          if (err) {
-            console.error("Error in database query 3:", err);
-            reject(err);
-          } else {
-            resolve(results);
-          }
-        });
-      }),
     ])
-      .then(([perfil, planes, planesCreados]) => {
-        res
-          .status(200)
-          .json({
-            perfil: perfil,
-            planes: planes,
-            planesCreados: planesCreados,
-          });
+      .then(([perfil, planes]) => {
+        res.status(200).json({
+          perfil: perfil,
+          planes: planes
+        });
       })
       .catch((err) => {
         res
