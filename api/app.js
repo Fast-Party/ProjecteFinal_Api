@@ -692,10 +692,10 @@ app.post("/aceptarUnionAPlan", (req, res) => {
 
 app.post("/denegarUnionAPlan", (req, res) => {
   try {
-    const { IdUsuarioPlan } = req.body;
+    const { IdUsuario, IdPlan } = req.body;
 
-    const query = "DELETE FROM Usuarios_Planes WHERE IdUsuarioPlan = ?";
-    db.query(query, [IdUsuarioPlan], (err, results) => {
+    const query = "DELETE FROM Usuarios_Planes WHERE IdUsuario = ? AND IdPlan = ?;";
+    db.query(query, [IdUsuario, IdPlan], (err, results) => {
       if (err) {
         console.error("Error in database query:", err);
         return res
