@@ -330,7 +330,7 @@ app.post("/perfilAutor", (req, res) => {
       .then(([perfil, planes]) => {
         res.status(200).json({
           perfil: perfil,
-          planes: planes
+          planes: planes,
         });
       })
       .catch((err) => {
@@ -513,6 +513,38 @@ app.post("/getPlanesAutoresSeguidos", (req, res) => {
     WHERE p.IdAutor = Usuario.IdUsuario AND Usuario.IsFollowing IS NOT NULL
     ORDER BY p.IdPlan;`;
     db.query(query, [IdUsuario], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(404).json({ message: "Error getting planes.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
+});
+
+app.post("/getMisPlanes", (req, res) => {
+  try {
+    const { IdUsuario } = req.body;
+
+    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.IdUsuario, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing, ImagenLogoAutor, Usuario.Verificado
+    FROM Planes p LEFT JOIN (
+      SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Localidad AS LocalidadAutor, u.Imagen AS ImagenLogoAutor, u.Verificado,
+        (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
+        (SELECT AVG(p.Valoracion) FROM Planes p WHERE p.IdAutor = u.IdUsuario) AS Rating,
+        (SELECT IdSeguimiento FROM Seguimientos WHERE IdSeguidor = ? AND IdSeguido = u.IdUsuario) AS IsFollowing
+      FROM Usuarios u
+      GROUP BY u.IdUsuario) AS Usuario ON p.IdAutor = Usuario.IdUsuario
+    LEFT JOIN ( 
+      SELECT pi.IdPlan, pi.Ruta 
+      FROM Planes_Imagenes pi
+      WHERE pi.Orden = 1) AS pi ON p.IdPlan = pi.IdPlan
+    WHERE p.IdAutor = Usuario.IdUsuario AND p.IdPlan IN (SELECT up.IdPlan
+		FROM Usuarios_Planes up
+		WHERE up.IdUsuario = ?)
+    ORDER BY p.IdPlan;`;
+    db.query(query, [IdUsuario, IdUsuario], (err, results) => {
       if (err) {
         console.error("Error in database query:", err);
         return res.status(404).json({ message: "Error getting planes.", err });
