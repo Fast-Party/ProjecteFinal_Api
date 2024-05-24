@@ -575,14 +575,15 @@ app.post("/getPlanesDeUsuario", (req, res) => {
 
 app.post("/getPlanById", (req, res) => {
   try {
-    const { IdPlan } = req.body;
+    const { IdPlan, IdUsuario } = req.body;
 
-    const query = `SELECT p.*, JSON_ARRAYAGG(JSON_OBJECT('Ruta', pi.Ruta, 'Orden', pi.Orden)) AS Imagenes
+    const query = `SELECT p.*, JSON_ARRAYAGG(JSON_OBJECT('Ruta', pi.Ruta, 'Orden', pi.Orden)) AS Imagenes,
+    (SELECT IdEstado FROM Usuarios_Planes WHERE IdPlan = ? AND IdUsuario = ?) AS IdEstado
     FROM Planes p
     LEFT JOIN Planes_Imagenes pi ON p.IdPlan = pi.IdPlan
     WHERE p.IdPlan = ?
     GROUP BY p.IdPlan;`;
-    db.query(query, [IdPlan], (err, results) => {
+    db.query(query, [IdPlan, IdUsuario, IdPlan], (err, results) => {
       if (err) {
         console.error("Error in database query:", err);
         return res.status(500).json({ message: "Error getting plan.", err });
@@ -642,7 +643,7 @@ app.post("/postPlan", (req, res) => {
 
 app.post("/unirseAPlan", (req, res) => {
   try {
-    const { IdPlan, IdUsuario, Privado } = req.body;
+    const { IdUsuario, IdPlan, Privado } = req.body;
 
     let estado = 0;
 
@@ -655,7 +656,7 @@ app.post("/unirseAPlan", (req, res) => {
     const query = `INSERT INTO Usuarios_Planes (IdUsuario, IdPlan, IdEstado) 
   VALUES (?,?,?)
   `;
-    db.query(query, [IdPlan, IdUsuario, estado], (err, results) => {
+    db.query(query, [IdUsuario, IdPlan, estado], (err, results) => {
       if (err) {
         console.error("Error in database query:", err);
         return res
