@@ -295,7 +295,7 @@ app.post("/perfilAutor", (req, res) => {
     const { IdUsuario } = req.body;
 
     const query1 = `SELECT u.NombreUsuario, u.Nombre, u.Descripcion, u.FechaNacimiento, u.Imagen,
-                  u.CuentaPrivada, u.Verificado, JSON_ARRAYAGG(JSON_OBJECT('Ruta', li.Ruta, 'Orden', li.Orden)) AS ImagenesLocal, 
+                  u.CuentaPrivada, u.Verificado, u.Direccion, JSON_ARRAYAGG(JSON_OBJECT('Ruta', li.Ruta, 'Orden', li.Orden)) AS ImagenesLocal, 
                   (SELECT COUNT(IdPlan) AS PlanesCreados FROM Planes WHERE IdAutor = ? AND Fecha < now()) AS PlanesCreados,
                   (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
                   AVG(p.Valoracion) AS Valoracion
