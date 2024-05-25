@@ -558,6 +558,26 @@ app.post("/getMisPlanes", (req, res) => {
   }
 });
 
+app.post("/getPlanesDeAutor", (req, res) => {
+  try {
+    const { IdAutor } = req.body;
+
+    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan FROM FastParty_Final.Planes p
+    LEFT JOIN(
+      SELECT pi.IdPlan, pi.Ruta FROM  FastParty_Final.Planes_Imagenes pi WHERE pi.Orden = 1) pi ON p.IdPlan = pi.IdPlan
+    WHERE p.IdAutor = ? ORDER BY p.Fecha DESC;`;
+    db.query(query, [IdAutor], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(500).json({ message: "Error getting planes.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
+});
+
 app.post("/getPlanesDeUsuario", (req, res) => {
   try {
     const { IdUsuario } = req.body;
