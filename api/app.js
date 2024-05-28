@@ -294,14 +294,16 @@ app.post("/perfilAutor", (req, res) => {
   try {
     const { IdUsuario } = req.body;
 
-    const query1 = `SELECT u.NombreUsuario, u.Nombre, u.Descripcion, u.FechaNacimiento, u.Imagen, 
-                  u.CuentaPrivada, u.Verificado, 
+    const query1 = `SELECT u.NombreUsuario, u.Nombre, u.Descripcion, u.FechaNacimiento, u.Imagen,
+                  u.CuentaPrivada, u.Verificado, u.Direccion,
+                  (SELECT JSON_ARRAYAGG(JSON_OBJECT('Ruta', li.Ruta, 'Orden', li.Orden))
+                  FROM Locales_Imagenes li WHERE li.IdAutor = u.IdUsuario) AS ImagenesLocal,
                   (SELECT COUNT(IdPlan) AS PlanesCreados FROM Planes WHERE IdAutor = ? AND Fecha < now()) AS PlanesCreados,
                   (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
                   AVG(p.Valoracion) AS Valoracion
                   FROM Usuarios u 
                   LEFT JOIN Planes p ON u.IdUsuario = p.IdAutor
-                  WHERE u.IdUsuario = ?`;
+                  WHERE u.IdUsuario = ?;`;
 
     const query2 = `SELECT * FROM Planes WHERE IdAutor = ?`;
 
@@ -459,7 +461,7 @@ app.post("/getPlanes", (req, res) => {
     WHERE p.IdAutor = Usuario.IdUsuario;`;*/
     const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.IdUsuario, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing, ImagenLogoAutor, Usuario.Verificado
     FROM Planes p LEFT JOIN (
-      SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Localidad AS LocalidadAutor, u.Imagen AS ImagenLogoAutor, u.Verificado,
+      SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Direccion AS LocalidadAutor, u.Imagen AS ImagenLogoAutor, u.Verificado,
         (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
         (SELECT AVG(p.Valoracion) FROM Planes p WHERE p.IdAutor = u.IdUsuario) AS Rating,
         (SELECT IdSeguimiento FROM Seguimientos WHERE IdSeguidor = ? AND IdSeguido = u.IdUsuario) AS IsFollowing
@@ -548,6 +550,26 @@ app.post("/getMisPlanes", (req, res) => {
       if (err) {
         console.error("Error in database query:", err);
         return res.status(404).json({ message: "Error getting planes.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
+});
+
+app.post("/getPlanesDeAutor", (req, res) => {
+  try {
+    const { IdAutor } = req.body;
+
+    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan FROM FastParty_Final.Planes p
+    LEFT JOIN(
+      SELECT pi.IdPlan, pi.Ruta FROM  FastParty_Final.Planes_Imagenes pi WHERE pi.Orden = 1) pi ON p.IdPlan = pi.IdPlan
+    WHERE p.IdAutor = ? ORDER BY p.Fecha DESC;`;
+    db.query(query, [IdAutor], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(500).json({ message: "Error getting planes.", err });
       }
       res.status(200).json({ results });
     });
