@@ -577,11 +577,12 @@ app.post("/getPlanById", (req, res) => {
   try {
     const { IdPlan, IdUsuario } = req.body;
 
-    const query = `SELECT p.*, JSON_ARRAYAGG(JSON_OBJECT('Ruta', pi.Ruta, 'Orden', pi.Orden)) AS Imagenes,
-    (SELECT IdEstado FROM Usuarios_Planes WHERE IdPlan = ? AND IdUsuario = ?) AS IdEstado
+    const query = `SELECT p.*, JSON_ARRAYAGG(JSON_OBJECT('Ruta', pi.Ruta, 'Orden', pi.Orden)) AS Imagenes, u.NombreUsuario AS NombreAutor, u.Imagen AS ImagenLogoAutor,
+    (SELECT IdEstado FROM Usuarios_Planes WHERE IdPlan = 1 AND IdUsuario = 7) AS IdEstado
     FROM Planes p
     LEFT JOIN Planes_Imagenes pi ON p.IdPlan = pi.IdPlan
-    WHERE p.IdPlan = ?
+    LEFT JOIN Usuarios u ON u.IdUsuario = p.IdAutor
+    WHERE p.IdPlan = 1
     GROUP BY p.IdPlan;`;
     db.query(query, [IdPlan, IdUsuario, IdPlan], (err, results) => {
       if (err) {
