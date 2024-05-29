@@ -292,7 +292,7 @@ app.post("/updatePerfilUsuario", (req, res) => {
 
 app.post("/perfilAutor", (req, res) => {
   try {
-    const { IdUsuario } = req.body;
+    const { IdAutor, IdUsuario } = req.body;
 
     const query1 = `SELECT u.NombreUsuario, u.Nombre, u.Descripcion, u.FechaNacimiento, u.Imagen,
                   u.CuentaPrivada, u.Verificado, u.Direccion,
@@ -300,6 +300,7 @@ app.post("/perfilAutor", (req, res) => {
                   FROM Locales_Imagenes li WHERE li.IdAutor = u.IdUsuario) AS ImagenesLocal,
                   (SELECT COUNT(IdPlan) AS PlanesCreados FROM Planes WHERE IdAutor = ? AND Fecha < now()) AS PlanesCreados,
                   (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
+                  (SELECT IdSeguimiento FROM Seguimientos WHERE IdSeguidor = ? AND IdSeguido = ?) AS IsFollowing,
                   AVG(p.Valoracion) AS Valoracion
                   FROM Usuarios u 
                   LEFT JOIN Planes p ON u.IdUsuario = p.IdAutor
@@ -309,7 +310,7 @@ app.post("/perfilAutor", (req, res) => {
 
     Promise.all([
       new Promise((resolve, reject) => {
-        db.query(query1, [IdUsuario, IdUsuario], (err, results) => {
+        db.query(query1, [IdAutor, IdUsuario, IdAutor, IdAutor], (err, results) => {
           if (err) {
             console.error("Error in database query 1:", err);
             reject(err);
