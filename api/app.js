@@ -151,7 +151,7 @@ app.post("/buscarUsuarios", (req, res) => {
     const { NombreUsuario } = req.body;
     const Nombre = NombreUsuario + "%";
 
-    const query = `SELECT u.IdUsuario, u.NombreUsuario, u.Nombre, u.Imagen, 
+    const query = `SELECT u.IdUsuario, u.NombreUsuario, u.Nombre, u.Imagen, u.Telefono, u.Email
     (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
     AVG(p.Valoracion) AS Valoracion
     FROM Usuarios u
@@ -295,7 +295,7 @@ app.post("/perfilAutor", (req, res) => {
     const { IdAutor, IdUsuario } = req.body;
 
     const query1 = `SELECT u.NombreUsuario, u.Nombre, u.Descripcion, u.FechaNacimiento, u.Imagen,
-                  u.CuentaPrivada, u.Verificado, u.Direccion, u.Telefono, u.Email
+                  u.CuentaPrivada, u.Verificado, u.Direccion, 
                   (SELECT JSON_ARRAYAGG(JSON_OBJECT('Ruta', li.Ruta, 'Orden', li.Orden))
                   FROM Locales_Imagenes li WHERE li.IdAutor = u.IdUsuario) AS ImagenesLocal,
                   (SELECT COUNT(IdPlan) AS PlanesCreados FROM Planes WHERE IdAutor = ? AND Fecha < now()) AS PlanesCreados,
