@@ -265,6 +265,14 @@ app.post("/updatePerfilUsuario", (req, res) => {
       setClause += "CuentaPrivada = ?, ";
       queryParams.push(usuario.CuentaPrivada);
     }
+    if (usuario.Telefono !== undefined) {
+      setClause += "Telefono = ?, ";
+      queryParams.push(usuario.Telefono);
+    }
+    if (usuario.Email !== undefined) {
+      setClause += "Email = ?, ";
+      queryParams.push(usuario.Email);
+    }
 
     setClause = setClause.slice(0, -2);
 
