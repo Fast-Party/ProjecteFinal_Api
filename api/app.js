@@ -151,7 +151,7 @@ app.post("/buscarUsuarios", (req, res) => {
     const { NombreUsuario } = req.body;
     const Nombre = NombreUsuario + "%";
 
-    const query = `SELECT u.IdUsuario, u.NombreUsuario, u.Nombre, u.Imagen, u.Telefono, u.Email
+    const query = `SELECT u.IdUsuario, u.NombreUsuario, u.Nombre, u.Imagen, 
     (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
     AVG(p.Valoracion) AS Valoracion
     FROM Usuarios u
@@ -177,7 +177,7 @@ app.post("/perfilUsuario", (req, res) => {
     const { IdUsuario } = req.body;
 
     const query1 = `SELECT u.NombreUsuario, u.Nombre, u.Descripcion, u.FechaNacimiento, u.Imagen, 
-                  u.CuentaPrivada, u.Verificado, 
+                  u.CuentaPrivada, u.Verificado, u.Telefono, u.Email,
                   (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
                   AVG(p.Valoracion) AS Valoracion
                   FROM Usuarios u 
