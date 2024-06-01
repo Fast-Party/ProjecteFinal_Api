@@ -535,6 +535,36 @@ app.post("/getPlanesAutoresSeguidos", (req, res) => {
   }
 });
 
+app.post("/getPlanesDescubrir", (req, res) => {
+  try {
+    const { IdUsuario } = req.body;
+
+    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.IdUsuario, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing, ImagenLogoAutor, Usuario.Verificado
+    FROM Planes p LEFT JOIN (
+      SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Direccion AS LocalidadAutor, u.Imagen AS ImagenLogoAutor, u.Verificado,
+        (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
+        (SELECT AVG(p.Valoracion) FROM Planes p WHERE p.IdAutor = u.IdUsuario) AS Rating,
+        (SELECT IdSeguimiento FROM Seguimientos WHERE IdSeguidor = ? AND IdSeguido = u.IdUsuario) AS IsFollowing
+      FROM Usuarios u
+      GROUP BY u.IdUsuario) AS Usuario ON p.IdAutor = Usuario.IdUsuario
+    LEFT JOIN ( 
+      SELECT pi.IdPlan, pi.Ruta 
+      FROM Planes_Imagenes pi
+      WHERE pi.Orden = 1) AS pi ON p.IdPlan = pi.IdPlan
+    WHERE p.IdAutor = Usuario.IdUsuario
+    ORDER BY p.IdPlan desc;`;
+    db.query(query, [IdUsuario], (err, results) => {
+      if (err) {
+        console.error("Error in database query:", err);
+        return res.status(404).json({ message: "Error getting planes.", err });
+      }
+      res.status(200).json({ results });
+    });
+  } catch (error) {
+    return res.status(500).json({ message: err });
+  }
+});
+
 app.post("/getMisPlanes", (req, res) => {
   try {
     const { IdUsuario } = req.body;
