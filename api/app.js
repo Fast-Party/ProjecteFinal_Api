@@ -614,7 +614,7 @@ app.post("/getMisPlanes", (req, res) => {
     WHERE p.IdAutor = Usuario.IdUsuario AND p.IdPlan IN (SELECT up.IdPlan
 		FROM Usuarios_Planes up
 		WHERE up.IdUsuario = ?)
-    ORDER BY p.IdPlan;`;
+    ORDER BY p.Fecha asc;`;
     db.query(query, [IdUsuario, IdUsuario], (err, results) => {
       if (err) {
         console.error("Error in database query:", err);
