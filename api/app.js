@@ -306,7 +306,7 @@ app.post("/perfilAutor", (req, res) => {
                   u.CuentaPrivada, u.Verificado, u.Direccion, 
                   (SELECT JSON_ARRAYAGG(JSON_OBJECT('Ruta', li.Ruta, 'Orden', li.Orden))
                   FROM Locales_Imagenes li WHERE li.IdAutor = u.IdUsuario) AS ImagenesLocal,
-                  (SELECT COUNT(IdPlan) AS PlanesCreados FROM Planes WHERE IdAutor = ? AND Fecha < now()) AS PlanesCreados,
+                  (SELECT COUNT(IdPlan) AS PlanesCreados FROM Planes WHERE IdAutor = ?) AS PlanesCreados,
                   (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores, 
                   (SELECT IdSeguimiento FROM Seguimientos WHERE IdSeguidor = ? AND IdSeguido = ?) AS IsFollowing,
                   AVG(p.Valoracion) AS Valoracion
