@@ -1204,6 +1204,97 @@ const swaggerDefinitions = {
     },
   },
 
+  "/getPlanesDescubrir": {
+    post: {
+      tags: ["Planes"],
+      summary: "Get discover plans",
+      description: "Fetch discoverable plans for the user",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                IdUsuario: { type: "integer" },
+              },
+              required: ["IdUsuario"],
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Discover plans fetched successfully",
+          content: {
+            "application/json": {
+              schema: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    IdPlan: { type: "integer" },
+                    RutaImagenPlan: { type: "string" },
+                    IdUsuario: { type: "integer" },
+                    NombreAutor: { type: "string" },
+                    LocalidadAutor: { type: "string" },
+                    Seguidores: { type: "integer" },
+                    RatingAutor: { type: "number", format: "float" },
+                    IsFollowing: { type: "boolean" },
+                    ImagenLogoAutor: { type: "string" },
+                    Verificado: { type: "boolean" },
+                    // Other properties of the plan can be added here
+                  },
+                },
+              },
+            },
+          },
+        },
+        400: {
+          description: "Bad request",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+        404: {
+          description: "Error getting discover plans",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                  err: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: { type: "string" },
+                  err: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
   "/getMisPlanes": {
     post: {
       tags: ["Planes"],
