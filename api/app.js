@@ -509,7 +509,7 @@ app.post("/getPlanesAutoresSeguidos", (req, res) => {
     ON u.IdUsuario = s.IdSeguido
     GROUP BY u.IdUsuario) AS Usuario
     WHERE p.IdAutor = Usuario.IdUsuario;`;*/
-    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.IdUsuario, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing, ImagenLogoAutor, Usuario.Verificado
+    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.IdUsuario, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Localidad, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing, ImagenLogoAutor, Usuario.Verificado
     FROM Planes p LEFT JOIN (
       SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Direccion AS LocalidadAutor, u.Localidad AS LocalidadAutor, u.Imagen AS ImagenLogoAutor, u.Verificado,
         (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
@@ -539,7 +539,7 @@ app.post("/getPlanesDescubrir", (req, res) => {
   try {
     const { IdUsuario } = req.body;
 
-    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.IdUsuario, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing, ImagenLogoAutor, Usuario.Verificado
+    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.IdUsuario, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Localidad, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing, ImagenLogoAutor, Usuario.Verificado
     FROM Planes p LEFT JOIN (
       SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Direccion AS LocalidadAutor, u.Imagen AS ImagenLogoAutor, u.Verificado,
         (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
@@ -569,7 +569,7 @@ app.post("/getPlanesTendencias", (req, res) => {
   try {
     const { IdUsuario } = req.body;
 
-    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.IdUsuario, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing, ImagenLogoAutor, Usuario.Verificado
+    const query = `SELECT p.*, pi.Ruta AS RutaImagenPlan, Usuario.IdUsuario, Usuario.NombreAutor, Usuario.LocalidadAutor, Usuario.Localidad, Usuario.Seguidores, Usuario.Rating AS RatingAutor, Usuario.IsFollowing, ImagenLogoAutor, Usuario.Verificado
     FROM Planes p LEFT JOIN (
       SELECT u.IdUsuario, u.NombreUsuario AS NombreAutor, u.Direccion AS LocalidadAutor, u.Imagen AS ImagenLogoAutor, u.Verificado,
         (SELECT COUNT(s.IdSeguido) FROM Seguimientos s WHERE s.IdSeguido = u.IdUsuario) AS Seguidores,
